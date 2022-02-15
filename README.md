@@ -14,4 +14,4 @@ Images are cropped in 112x128 pixels by default but the sensor outputs 128x128 p
 # Example of image output
 ![results](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/results.png)
 
-You can notive that 2D edge enhancement creates image artifacts well known from the Game Boy Camera freaks.
+You can notive that 2D edge enhancement creates image artifacts well known from the Game Boy Camera freaks. These artifacts are so intrinsic to the sensor and not a flaw of the Game Boy Camera code implementation.
