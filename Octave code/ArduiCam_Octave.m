@@ -15,12 +15,12 @@ set(arduinoObj, 'timeout',-1);
 flag=0;
 num_image=1;
 
-while flag==0
+while true
 
     data = ReadToTermination(arduinoObj);
     
-    if length(data)>1000
-        offset=1;
+    if length(data)>128*128+1
+        offset=2;
         for i=1:1:128
             for j=1:1:128
                 im(i,j)=double(data(offset));
@@ -31,10 +31,10 @@ while flag==0
         im=im(9:end-8,:);
         imagesc(im)
         colormap gray
-        drawnow
         minimum=min(min(im));
         maximum=max(max(im));
         title(['mininum=',num2str(minimum),' maximum=',num2str(maximum)])
+        drawnow
         im=im-minimum;
         maximum=max(max(im));
         slope=255/maximum;
