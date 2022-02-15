@@ -27,22 +27,22 @@
 /* GLOBALS                                                                  */
 /* ------------------------------------------------------------------------ */
 //Typical register setting used by the GB camera with 2D edge enhancement
-//Z1 Z0 O5 O4 O3 O2 O1 O0 zero point calibration and output reference voltage
+//Z1 Z0 O5 O4 O3 O2 O1 O0 zero point calibration and output offset voltage (0 seems the 
 int reg0=0b10000000;
-//N VH1 VH0 G4 G3 G2 G1 G0 
+//N VH1 VH0 G4 G3 G2 G1 G0 / G is the gain
 int reg1=0b01100000;
-//C17 C16 C15 C14 C13 C12 C11 C10 / exposure time by 4096 ms steps (max 1.0486 s)
-int reg2=0b00000011;
-//C07 C06 C05 C04 C03 C02 C01 C00 / exposure time by 16 µs steps (max 4096 ms)
-int reg3=0b00000000;
-//P7 P6 P5 P4 P3 P2 P1 P0 
+//C17 C16 C15 C14 C13 C12 C11 C10 / exposure time by 4096 ms steps (max 1.0486 s) 
+int reg2=0b00000000;
+//C07 C06 C05 C04 C03 C02 C01 C00 / exposure time by 16 µs steps (max 4096 ms) 
+int reg3=0b00111111;
+//P7 P6 P5 P4 P3 P2 P1 P0  
 int reg4=0b00000010;
 //M7 M6 M5 M4 M3 M2 M1 M0
 int reg5=0b00000101;
 //X7 X6 X5 X4 X3 X2 X1 X0
 int reg6=0b00000001;
-//E3 E2 E1 E0 I V2 V1 V0
-int reg7=0b00000111;
+//E3 E2 E1 E0 I V2 V1 V0 / E is the enhancement ratio
+int reg7=0b01000111;
 
 // example of default value for registers giving a smooth image
 // no edge detection, exposure=0,30, offset=-27, vref=+1.0
@@ -73,6 +73,11 @@ void setup()
  	Serial.begin(115200);
   Serial.println("");
   Serial.println("Camera initialisation");
+  Serial.print("Registers: ");
+  for (int i=0;i<7;i++) {
+  Serial.print(camReg[i],HEX);
+  Serial.print(" ");
+  }
   Serial.println("");
 	camInit();
 	/* enable interrupts */
@@ -90,8 +95,9 @@ void loop()
       Serial.println("");
       Serial.println("Get new image");
       digitalWrite(4,HIGH);
-      camReadPicture(true, true); // get both pixels and objects
+      delay(50);
       digitalWrite(4,LOW);
+      camReadPicture(true, true); // get both pixels and objects
       Serial.println("");
       delay(500);
       camReset();
@@ -255,7 +261,7 @@ void camReadPicture(boolean getPixels, boolean getObjects)
   camStepDelay();
   camClockL();
   camStepDelay();
-  camStepDelay();
+  //camStepDelay();
  
   // Wait for READ to go high
   while (1) {
@@ -268,7 +274,7 @@ void camReadPicture(boolean getPixels, boolean getObjects)
     camStepDelay();
     camClockL();
     camStepDelay();
-    camStepDelay();
+    //camStepDelay();
   }
   
 //  if (getPixels)
@@ -294,7 +300,7 @@ void camReadPicture(boolean getPixels, boolean getObjects)
       }
       camClockH();
       camStepDelay();
-      camStepDelay();
+      //camStepDelay();
 
     } // end for x
   } /* for y */
@@ -303,12 +309,12 @@ void camReadPicture(boolean getPixels, boolean getObjects)
   while ( digitalRead(CAM_READ_PIN) == HIGH ) { 
     camClockL();
     camStepDelay();
-    camStepDelay();
+    //camStepDelay();
     camClockH();
     camStepDelay();
-    camStepDelay();
+    //camStepDelay();
   }
   camClockL();
   camStepDelay();
-  camStepDelay();
+  //camStepDelay();
 }
