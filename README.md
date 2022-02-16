@@ -18,3 +18,5 @@ You can notice that aggressive 2D edge enhancement (on the right) creates image 
 
 # Typical register setting used by the Game Boy Camera
 ![setting](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/setting.png)
+
+Setting the registers to get a correct image is a trial-and-error work as the user manual of the sensor is all but obvious to understand. Some good settings returns only chunks of good images for no reason. Some obvious settings return unexpected results. You have to try how to find good results for your lighting conditions by yourself.
