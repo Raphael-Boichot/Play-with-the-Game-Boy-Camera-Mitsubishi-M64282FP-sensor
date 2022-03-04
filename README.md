@@ -20,4 +20,4 @@ You can notice that aggressive 2D edge enhancement (on the right) creates image 
 ![setting](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/setting.png)
 
 ## Known bugs
-The registers are ignored during the first two pictures for unkown reason. The sensor boots systematically with default values set by the Arduino before taking values from the serial. I must admit that bi-directionnal serial protocol between Arduino and GNU Octave was a real pain to code from scratch and there are still some mysteries to me.
+The registers are ignored during the first two pictures taken for unknown reason. The sensor boots systematically with default values set by the Arduino before taking values from the serial. I must admit that bi-directionnal serial protocol between Arduino and GNU Octave was a real pain to code from scratch and there are still some mysteries to me. I would by far prefer code this in Matlab.
