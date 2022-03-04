@@ -17,14 +17,14 @@
 #define CAM_CLOCK_BIT 1
 #define CAM_READ_BIT  0
 
-// PORT C: Analogic/digital converter
-#define CAM_ADC_PIN   A3
+// PORT C:
+#define CAM_ADC_PIN   A3 //Analogic/digital converter
 
-unsigned char camReg[8]={155,0,3,0,1,0,1,7};//default value in case transmission failed;
+unsigned char camReg[8] = {155,0,0,0,1,0,1,7}; //default value for warm-up
 unsigned char camClockSpeed = 0x07; // was 0x0A
-int dataOut;
 boolean dataReady;
 unsigned char reg;
+int snap;
 
 //main code//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void setup()
@@ -32,35 +32,44 @@ void setup()
   dataReady = false;
   Serial.begin(115200);
   Serial.println("Camera initialisation");
+  pinMode(8, INPUT);   // READ
+  pinMode(9, OUTPUT);  // XCK
+  pinMode(10, OUTPUT);  // XRST
+  pinMode(11, OUTPUT); // LOAD
+  pinMode(12, OUTPUT); // SIN
+  pinMode(13, OUTPUT); // START
+  pinMode(4, OUTPUT);   // LED
   camInit();
   sei();// enable interrupts
 }
 
 void loop()//the main loop reads 8 registers from GNU Octave and send an image to serial
 {
+
   if (Serial.available() > 0) {
+    digitalWrite(4, HIGH);
     for (reg = 0; reg < 8; ++reg) {
-      camReg[reg] = Serial.read(); //read the 8 current registers sent by GNU Octave
+    camReg[reg] = Serial.read(); //read the 8 current registers sent by GNU Octave
     }
+    delay(50);
+    digitalWrite(4, LOW);
   }
 
-  Serial.print("registers injected in sensor: ");
-  for (reg = 0; reg < 8; ++reg) {
-    Serial.print(camReg[reg], DEC);//sent them back to GNU Octave for acknowledgment
-    Serial.print(" ");
-  }
-  Serial.println("");
+    Serial.print("registers injected in sensor: ");
+    for (reg = 0; reg < 8; ++reg) {
+      Serial.print(camReg[reg], DEC);//sent them back to GNU Octave for acknowledgment
+      Serial.print(" ");
+    }
+    Serial.println("");
 
-  camReset();
-  camSetRegisters();// Send 8 camera registers
-  Serial.println("");
-  digitalWrite(4, HIGH);
-  camReadPicture(); // get both pixels and objects, GNU Octave reads them on serial and does the rest of the job
-  digitalWrite(4, LOW);
-  Serial.println("");
-  Serial.println("Image read");
-  camReset();
-  Serial.println("sensor reset");
+    camReset();
+    camSetRegisters();// Send 8 registers to the sensor
+    Serial.println("");
+    camReadPicture(); // get pixels, GNU Octave reads them on serial and does the rest of the job
+    Serial.println("");
+    Serial.println("Image read");
+    camReset();
+    Serial.println("sensor reset");
 
 } //main code//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -91,14 +100,6 @@ inline void camClockH()
 // Initialise the IO ports for the camera
 void camInit()
 {
-  pinMode(8, INPUT);   // READ
-  pinMode(9, OUTPUT);  // XCK
-  pinMode(10, OUTPUT);  // XRST
-  pinMode(11, OUTPUT); // LOAD
-  pinMode(12, OUTPUT); // SIN
-  pinMode(13, OUTPUT); // START
-  pinMode(4, OUTPUT);   // LED
-
   cbi(CAM_DATA_PORT, CAM_CLOCK_BIT);
   sbi(CAM_DATA_PORT, CAM_RESET_BIT);  // Reset is active low
   cbi(CAM_DATA_PORT, CAM_LOAD_BIT);
