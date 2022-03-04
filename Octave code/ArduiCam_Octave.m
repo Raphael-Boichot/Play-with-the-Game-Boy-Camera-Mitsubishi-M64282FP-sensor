@@ -15,7 +15,6 @@ set(arduinoObj, 'timeout',-1);
 flag=0;
 num_image=1;
 
-
 %Z1 Z0 O5 O4 O3 O2 O1 O0 zero point calibration and output reference voltage
 reg0=0b10000000;
 %N VH1 VH0 G4 G3 G2 G1 G0 
@@ -51,7 +50,7 @@ data=[];
     end;
     
     if length(data)>1000 %This is an image coming
-          offset=2; %First byte is kunk (do not know why)
+        offset=2; %First byte is kunk (do not know why)
         im=[];
         for i=1:1:128 %We get the full image, 5 lines are junk at bottom, top is glitchy due to amplifier artifacts
             for j=1:1:128
