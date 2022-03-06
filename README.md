@@ -26,4 +26,4 @@ Vertical and horizontal artifacts seen on the Game Boy Camera are just a matter 
 ![setting](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/setting.png)
 
 ## Known bugs
-The registers are not transmitted correctly by the serial protocol during the first two orders to take picture for unknown reason. The sensor boots systematically with default values set by the Arduino before taking values from the serial. I must admit that bi-directionnal serial protocol between Arduino and GNU Octave was a real pain to code from scratch and there are still some mysteries to me. I suspect the GNU Octave implementation of serial protocol to have bugs.
+The registers are sometimes not transmitted correctly by the serial protocol for unknown reason. I must admit that bi-directionnal serial protocol between Arduino and GNU Octave was a real pain to code from scratch and there are still some mysteries to me. I suspect the GNU Octave implementation of serial protocol to have severe bugs.
