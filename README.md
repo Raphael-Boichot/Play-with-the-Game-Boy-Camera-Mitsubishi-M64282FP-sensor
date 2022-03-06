@@ -1,5 +1,5 @@
 # Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor
-A set of codes to address the Mitsubishi M64282FP artificial retina with an Arduino Uno and a simple GNU Octave image saver. Code is mainly a fork/cleaning of [this old project](https://github.com/shimniok/avr-gameboy-cam) to go as fast as possible from the reading of this present page to something working. The original project is also detailed [here](https://www.bot-thoughts.com/2010/04/gameboy-camera-prototyping.html).
+A set of codes to address the Mitsubishi M64282FP artificial retina with an Arduino Uno and a simple GNU Octave image saver. Code is mainly a fork/cleaning of [this old project](https://github.com/shimniok/avr-gameboy-cam) to go as fast as possible from the reading of this present page to something working with the less dependencies to install. The original project, detailed [here](https://www.bot-thoughts.com/2010/04/gameboy-camera-prototyping.html), is a bit more ambitious but not that easy to use.
 
 Required installations: [Arduino IDE](https://www.arduino.cc/en/software) and [GNU Octave](https://www.gnu.org/software/octave/index).
 
