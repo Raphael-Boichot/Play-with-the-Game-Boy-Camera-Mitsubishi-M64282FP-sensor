@@ -3,13 +3,13 @@
 
 clear
 clc
+autoexposure='ON'%or OFF
 disp('--------------------------------------------')
 disp('|Beware, this code is for Octave ONLY !!!  |')
 disp('--------------------------------------------')
 pkg load image
 pkg load instrument-control
 arduinoObj = serialport("COM3",'baudrate',115200); %set the Arduino com port here
-%configureTerminator(arduinoObj,"CR/LF");
 flush(arduinoObj);
 set(arduinoObj, 'timeout',-1);
 flag=0;
@@ -34,24 +34,25 @@ reg7=0b00000111; %set Vref to 1 volts... because
 reg0=0b00111111; %set offset voltage to 1 volts to have 0-2 volts peak to peak voltages
 
 while flag==0 %infinite loop
-
   register=[reg0 reg1 reg2 reg3 reg4 reg5 reg6 reg7];%free setting
   %register=[155 0 20 0 1 0 1 7];%Typical minimal settings (the image is smooth)
   %register=[128 96 100 0 2 5 1 7];%Typical register setting used by the GB camera with 2D edge enhancement
-  
-  for k=1:1:8
-  fwrite(arduinoObj,char(register(k))); %send registers to Arduino
-  end
-
+ 
 data=[];
-  while length(data)<1000  %flush serial
-    data = ReadToTermination(arduinoObj);
-    if not(isempty(strfind(data,'registers'))); %print the registers sent by Arduino for confirmation
-      disp(data);
-    end;
-    
+
+  data = ReadToTermination(arduinoObj);
+  if not(length(data)>1000)
+  disp(data);
+  end
+  
+    if not(isempty(strfind(data,'Ready'))); %Inject the registers
+    for k=1:1:8
+    fwrite(arduinoObj,char(register(k))); %send registers to Arduino
+    end
+    end;  
+
     if length(data)>1000 %This is an image coming
-        offset=2; %First byte is kunk (do not know why)
+        offset=2; %First byte is always junk (do not know why, probably a Println LF)
         im=[];
         if length(data)>=16386
           for i=1:1:128 %We get the full image, 5 lines are junk at bottom, top is glitchy due to amplifier artifacts
@@ -91,6 +92,26 @@ data=[];
         %end nice png output with autocontrast
         disp(['Saving Arduicam_',num2str(num_image),'.png'])
         num_image=num_image+1;
-    end
-  end
+        
+        if autoexposure=='ON'
+          delta=moyenne-160;
+          disp(['Autoexposure delta = ',num2str(delta)])
+          disp(['Autoexposure rg2 = ',num2str(reg2)])
+          disp(['Autoexposure rg3 = ',num2str(reg3)])
+          
+          if not(reg2==0); reg3=reg3-round(delta);end;
+          if reg2==0; reg3=reg3-1*sign(delta);end;
+          
+          if reg3>255;
+            reg3=reg3-255;
+            reg2=reg2+1;
+          end;
+          if reg3<0;
+            reg3=reg3+255;
+            reg2=reg2-1;
+          end;
+          if reg2<0;reg2=0;end;
+          if reg3<0;reg3=0;end;
+        end
+end
 end
