@@ -10,12 +10,17 @@ Images are cropped in 112x128 pixels into the Octave code but it reads and proce
 ## Pinout and setup
 ![setup](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/setup.png)
 
-Pinout was cross-referenced with this [page](https://www.cemetech.net/projects/item.php?id=54) and this [page](https://www.google.com/amp/s/www.instructables.com/PC-Interfacing-a-GameBoy-Camera/%3famp_page=true).
+Pinout was cross-referenced from this [page](https://www.cemetech.net/projects/item.php?id=54) and this [page](https://www.google.com/amp/s/www.instructables.com/PC-Interfacing-a-GameBoy-Camera/%3famp_page=true).
 
 ## Example of image output
 ![results](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/results.png)
 
 You can notice that aggressive 2D edge enhancement (on the right) creates image artifacts (vertical streaks and horizontal splitting of image exposure) well known from the Game Boy Camera freaks. In consequence, these artifacts are intrinsic to the M64282FP sensor and not a bug into the Game Boy Camera code implementation. I weared the same black jacket on the two images and you can see the infrared fluorescence on the left one (with outdoor ligth), the sensor being particularly sensitive to it.
+
+## Example of image artifacts
+![results](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/Artifacts.png)
+
+Vertical and horizontal artifacts seen on the Game Boy Camera are just a matter of exposure level and intrinsic to the sensor. They are increased by the edge enhancement feature.
 
 ## Typical register setting used by the Game Boy Camera
 ![setting](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/setting.png)
