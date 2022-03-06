@@ -14,13 +14,14 @@ flush(arduinoObj);
 set(arduinoObj, 'timeout',-1);
 flag=0;
 num_image=1;
-
+error=imread('Error.png');
+mkdir('./images/')
 %N VH1 VH0 G4 G3 G2 G1 G0 
 reg1=0b01100000;
 %C17 C16 C15 C14 C13 C12 C11 C10 / exposure time by 4096 ms steps (max 1.0486 s)
-reg2=0b00010000; %Use for indoor lighting
+reg2=0b00000001; %big steps
 %C07 C06 C05 C04 C03 C02 C01 C00 / exposure time by 16 µs steps (max 4096 ms)
-reg3=0b00000000; %Use for outdoor lighting
+reg3=0b00000000; %small steps
 %P7 P6 P5 P4 P3 P2 P1 P0 
 reg4=0b00000010; %filtering kernels
 %M7 M6 M5 M4 M3 M2 M1 M0
@@ -52,19 +53,28 @@ data=[];
     if length(data)>1000 %This is an image coming
         offset=2; %First byte is kunk (do not know why)
         im=[];
-        for i=1:1:128 %We get the full image, 5 lines are junk at bottom, top is glitchy due to amplifier artifacts
-            for j=1:1:128
-                im(i,j)=double(data(offset));
-                offset=offset+1;
-            end
-        end
+        if length(data)>=16386
+          for i=1:1:128 %We get the full image, 5 lines are junk at bottom, top is glitchy due to amplifier artifacts
+              for j=1:1:128
+                  im(i,j)=double(data(offset));
+                  offset=offset+1;
+              end
+          end
         raw=im; %We keep the raw data just in case
         im=im(9:end-8,:); %We get the intersting part of the image, what a Game Boy Camera displays for example
+        end
+      
+        if length(data)<16386
+        im=error(:,:,1);
+        end
+      
         subplot(1,2,1)
         imagesc(im)
+        title('Live view')
         colormap gray
         subplot(1,2,2)
         hist(reshape(im,1,[]),255)
+        title('Pixel histogramm')
         drawnow
         %preparing for nice png output with autocontrast
         minimum=min(min(im));
@@ -77,7 +87,7 @@ data=[];
         im=im*slope;
         im=uint8(im);
         im=imresize(im,4,'nearest');
-        imwrite(im,['Arduicam_',num2str(num_image),'.png'])
+        imwrite(im,['./images/Arduicam_',num2str(num_image),'.png'])
         %end nice png output with autocontrast
         disp(['Saving Arduicam_',num2str(num_image),'.png'])
         num_image=num_image+1;
