@@ -7,10 +7,7 @@ Simply grab the eye ball of a GB camera, connect to an Arduino Uno following the
 
 Images are cropped in 112x128 pixels into the Octave code but it reads and process the whole sensor 128x128 pixels images. The 5 lower lines of pixels are adressable but return junk data (the pixels [are physically differents here](https://github.com/Raphael-Boichot/Game-Boy-chips-decapping-project), whatever their function) while the upper part of image displays amplification artifacts at high exposure time. User may modify the code easily to show and save the whole image. 
 
-## Pinout with Arduino Uno
-![pinout](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/pinout.png)
-
-## Global setup
+## Pinout and setup
 ![setup](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/setup.png)
 
 ## Example of image output
