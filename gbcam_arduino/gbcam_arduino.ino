@@ -1,6 +1,14 @@
 //Laurent Saint-Marcel (lstmarcel@yahoo.fr) 2005/07/05
 //Simplified and cleaned by Raphaël BOICHOT 2020/03/04
-
+/*
+RESET/XRST has to be low on the rising edge of XCK
+Raise LOAD high as you clear the last bit of each register you send
+START has to be high before rixing XCK
+Send START once
+The camera won't pulse the START pin; the datasheet is confusing about this
+READ goes high on rising XCK
+Read VOUT analog values shortly after you set XCK low
+*/
 #include <compat/deprecated.h>
 
 #define CAM_DATA_PORT     PORTB
@@ -24,7 +32,6 @@ unsigned char camReg[8] = {155,0,0,0,1,0,1,7}; //default value for warm-up
 unsigned char camClockSpeed = 0x07; // was 0x0A
 boolean dataReady;
 unsigned char reg;
-int snap;
 
 //main code//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void setup()
@@ -46,16 +53,15 @@ void setup()
 void loop()//the main loop reads 8 registers from GNU Octave and send an image to serial
 {
 
+  Serial.println("Ready for injecting registers");
   if (Serial.available() > 0) {
     digitalWrite(4, HIGH);
     for (reg = 0; reg < 8; ++reg) {
     camReg[reg] = Serial.read(); //read the 8 current registers sent by GNU Octave
     }
-    delay(50);
     digitalWrite(4, LOW);
-  }
 
-    Serial.print("registers injected in sensor: ");
+    Serial.print("Registers injected in sensor by GNU Octave for verification: ");
     for (reg = 0; reg < 8; ++reg) {
       Serial.print(camReg[reg], DEC);//sent them back to GNU Octave for acknowledgment
       Serial.print(" ");
@@ -64,12 +70,12 @@ void loop()//the main loop reads 8 registers from GNU Octave and send an image t
 
     camReset();
     camSetRegisters();// Send 8 registers to the sensor
-    Serial.println("");
     camReadPicture(); // get pixels, GNU Octave reads them on serial and does the rest of the job
     Serial.println("");
-    Serial.println("Image read");
+    Serial.println("Image acquired");
     camReset();
     Serial.println("sensor reset");
+}
 
 } //main code//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
