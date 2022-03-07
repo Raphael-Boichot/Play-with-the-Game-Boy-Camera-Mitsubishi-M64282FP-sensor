@@ -10,8 +10,7 @@ disp('--------------------------------------------')
 pkg load image
 pkg load instrument-control
 arduinoObj = serialport("COM3",'baudrate',115200); %set the Arduino com port here
-flush(arduinoObj);
-set(arduinoObj, 'timeout',-1);
+%set(arduinoObj, 'timeout',-1);
 flag=0;
 num_image=1;
 error=imread('Error.png');
@@ -37,10 +36,9 @@ while flag==0 %infinite loop
   register=[reg0 reg1 reg2 reg3 reg4 reg5 reg6 reg7];%free setting
   %register=[155 0 20 0 1 0 1 7];%Typical minimal settings (the image is smooth)
   %register=[128 96 100 0 2 5 1 7];%Typical register setting used by the GB camera with 2D edge enhancement
- 
 data=[];
+data = ReadToTermination(arduinoObj);
 
-  data = ReadToTermination(arduinoObj);
   if not(length(data)>1000)
   disp(data);
   end
@@ -71,8 +69,8 @@ data=[];
       
         subplot(1,2,1)
         imagesc(im)
-        title('Live view')
         colormap gray
+        title('Live view')
         subplot(1,2,2)
         hist(reshape(im,1,[]),255)
         title('Pixel histogramm')
@@ -99,8 +97,8 @@ data=[];
           disp(['Autoexposure rg2 = ',num2str(reg2)])
           disp(['Autoexposure rg3 = ',num2str(reg3)])
           
-          if not(reg2==0); reg3=reg3-round(delta);end;
-          if reg2==0; reg3=reg3-1*sign(delta);end;
+          if not(reg2==0); reg3=reg3-min(10*round(delta),255);end;
+          if reg2==0; reg3=reg3-0.1*round(delta);end;
           
           if reg3>255;
             reg3=reg3-255;
