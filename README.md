@@ -25,7 +25,7 @@ Vertical and horizontal artifacts seen on the Game Boy Camera are just a matter 
 ## Typical register setting used by the Game Boy Camera
 ![setting](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/setting.png)
 
-These are what I think to be the registers used by the Game Boy Camera...
+These are what I think to be the registers used by the Game Boy Camera... Images taken with these settings are very similar at least.
 
 ## Known bugs
 The registers are sometimes not transmitted correctly by the serial protocol for unknown reason. I must admit that bi-directionnal serial protocol between Arduino and GNU Octave was a real pain to code from scratch and there are still some mysteries to me. I suspect the GNU Octave implementation of serial protocol to have many bugs.
