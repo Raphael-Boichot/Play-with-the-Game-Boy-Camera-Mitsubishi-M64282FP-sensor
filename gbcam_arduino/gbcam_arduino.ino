@@ -1,4 +1,4 @@
-//Simplified and completely rewritten by Raphaël BOICHOT in 2020/03/07 to be Arduino/ESP8266/ESP32 compilable 
+//Simplified and completely rewritten by Raphaël BOICHOT in 2022/03/07 to be Arduino/ESP8266/ESP32 compilable 
 //from a code of Laurent Saint-Marcel (lstmarcel@yahoo.fr) 2005/07/05
 /*
 RESET has to be low on the rising edge of CLOCK
