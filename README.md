@@ -1,7 +1,9 @@
 # Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor
-A set of codes to address the Mitsubishi M64282FP artificial retina with an Arduino Uno and a simple GNU Octave image saver. There has been many previous attempts to interface this sensor. There is an [Arduino port](https://github.com/shimniok/avr-gameboy-cam) coupled with a [java interface](https://www.bot-thoughts.com/2010/04/gameboy-camera-prototyping.html), a [TI Calculator](https://www.cemetech.net/projects/item.php?id=54) or an [OpenGL interface](https://www.instructables.com/PC-Interfacing-a-GameBoy-Camera/).
+A set of codes to address the Mitsubishi M64282FP artificial retina with an Arduino Uno and a simple GNU Octave image saver. 
 
-However, all these projects (even if not claiming it) uses the same obsolete code originating from the [initial 2005 project](http://sophiateam.undrgnd.free.fr/microcontroller/camera/) as main part. The port here is a complete reboot to ensure an Arduino/ESP8266/ESP32 compatibility.
+There has been many previous attempts to interface this sensor. There is a famous [Arduino port](https://github.com/shimniok/avr-gameboy-cam) coupled with a [java interface](https://www.bot-thoughts.com/2010/04/gameboy-camera-prototyping.html), a [TI Calculator interface](https://www.cemetech.net/projects/item.php?id=54) or an [OpenGL interface](https://www.instructables.com/PC-Interfacing-a-GameBoy-Camera/). However, all these projects (even if not claiming it) uses the same obsolete code originating from the [initial 2005 project](http://sophiateam.undrgnd.free.fr/microcontroller/camera/) as main engine.
+
+The port here is a complete reboot to ensure an Arduino/ESP8266/ESP32 compatibility with up to date commands.
 
 Required installations: [Arduino IDE](https://www.arduino.cc/en/software) and [GNU Octave](https://www.gnu.org/software/octave/index).
 
