@@ -1,7 +1,7 @@
 # Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor
-A set of codes to address the Mitsubishi M64282FP artificial retina with an Arduino Uno and a simple GNU Octave image saver. Code is a complete reboot of [this very old project](https://www.bot-thoughts.com/2010/04/gameboy-camera-prototyping.html). It has them been embedded in other projects like an [Arduino port](https://github.com/shimniok/avr-gameboy-cam), 
+A set of codes to address the Mitsubishi M64282FP artificial retina with an Arduino Uno and a simple GNU Octave image saver. There has been many previous attempts to interface this sensor. There is an [Arduino port](https://github.com/shimniok/avr-gameboy-cam) coupled with a [java interface](https://www.bot-thoughts.com/2010/04/gameboy-camera-prototyping.html), a [TI Calculator](https://www.cemetech.net/projects/item.php?id=54) or an [OpenGL interface](https://www.instructables.com/PC-Interfacing-a-GameBoy-Camera/).
 
-to allow Arduino/ESP8266/ESP32 compiling. The very original project is detailed [here](). It was then adapted  , is a bit more ambitious but uses obsolete libraries and commands. The project here is probably able to be turned into something portable with an ESP and without too much efforts. Will perhaps do this later.and [here](http://sophiateam.undrgnd.free.fr/microcontroller/camera/)
+However, all these projects uses the obsolete commands originating from the [initial 2005 project](http://sophiateam.undrgnd.free.fr/microcontroller/camera/).
 
 Required installations: [Arduino IDE](https://www.arduino.cc/en/software) and [GNU Octave](https://www.gnu.org/software/octave/index).
 
@@ -12,7 +12,7 @@ Images are cropped in 112x128 pixels into the Octave code but it reads and proce
 ## Pinout and setup
 ![setup](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/setup.png)
 
-Pinout was cross-referenced from this [page](https://www.cemetech.net/projects/item.php?id=54) and this [page](https://www.google.com/amp/s/www.instructables.com/PC-Interfacing-a-GameBoy-Camera/%3famp_page=true). The Pinout given here is the same than in the Arduino program. I'm not particularly proud of my setting but it does the job for the time of code developpement. Using an Arduino proto shield is strongly advised.
+The Pinout given here is the same than in the Arduino program. I'm not particularly proud of my setting but it does the job for the time of code developpement. Using an Arduino proto shield is strongly advised.
 
 ## Example of image output
 ![results](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/results.png)
