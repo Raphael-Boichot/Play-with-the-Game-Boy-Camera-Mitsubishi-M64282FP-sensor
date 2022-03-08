@@ -1,28 +1,19 @@
-//Simplified and completely rewritten by Raphaël BOICHOT in 2022/03/07 to be Arduino/ESP8266/ESP32 compilable 
-//from a code of Laurent Saint-Marcel (lstmarcel@yahoo.fr) 2005/07/05
-/*
-RESET has to be low on the rising edge of CLOCK
-Raise LOAD high as you clear the last bit of each register you send
-START has to be high before rixing CLOCK
-Send START once
-The camera won't pulse the START pin; the datasheet is confusing about this
-READ goes high on rising CLOCK
-Read VOUT analog values shortly after you set CLOCK low
-*/
+//Simplified and completely rewritten by Raphaël BOICHOT in 2022/03/07 to be Arduino/ESP8266/ESP32 compatible
+//from a code of Laurent Saint-Marcel (lstmarcel@yahoo.fr) written in 2005/07/05
+//once cleaned and updated, the code is in fact damn simple to understand contrary to the original code
 
-int VOUT = A3; //Analogic-digital converter
-int READ = 8;
-int CLOCK = 9;
-int RESET = 10;
-int LOAD = 11;
-int SIN = 12;
-int START = 13;
-int LED = 4;
+int VOUT = A3; //Analog signal from sensor, read shortly after clock is set low, converted to 10 bits by Arduino/ESP then reduced to 8-bits for transmission
+int READ = 8; //Read image signal, goes high on rising clock
+int CLOCK = 9; //Clock input, pulled down internally, no specification given for frequency
+int RESET = 10; //system reset, pulled down internally, active low, sent on rising edge of clock
+int LOAD = 11; //parameter set enable, pulled down internally, Raise high as you clear the last bit of each register you send
+int SIN = 12; //parameter input, pulled down internally
+int START = 13; //Image sensing start, pulled down internally, has to be high before rising CLOCK
+int LED = 4; //just for additionnal LED on D4, not essential to the protocol
 
-unsigned char camReg[8] = {155,0,0,0,1,0,1,7}; //default value just for warm-up
+unsigned char camReg[8] = {155,0,0,0,1,0,1,7}; //default value, can be used for debug, is erased anyway by Octave
 unsigned char reg;
 
-//main code//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void setup()
 {
   Serial.begin(115200);
@@ -36,33 +27,32 @@ void setup()
   pinMode(LED, OUTPUT);   // LED
   camInit();
   for (int i = 0; i < 100; i++) {
-  Serial.println("Camera initialised"); //Octave is not happy without spamming the serial initially...
+  Serial.println("Camera initialised"); //Octave is not happy without being spammed initially, may be removed in portable device
   }
-  
 }
 
-void loop()//the main loop reads 8 registers from GNU Octave and send an image to serial
+// there is no special command to trigger sensor, as soon as 8 registers are received, an image is requested to the sensor
+void loop()//the main loop just reads 8 registers from GNU Octave and send an image to serial in 8-bits binary
 {
-
-  Serial.println("Ready for injecting registers");
-  if (Serial.available() > 0) {
+  Serial.println("Ready for injecting registers"); //Go for sending registers on GNU Octave side
+  if (Serial.available() > 0) {// do I receive a byte ?
     digitalWrite(LED, HIGH);
     for (reg = 0; reg < 8; ++reg) {
     camReg[reg] = Serial.read(); //read the 8 current registers sent by GNU Octave
     }
-    delay(100);
+    delay(100);//the delay here is just to see the LED flashing without slowing down the protocol, can be removed if necessary
     digitalWrite(LED, LOW);
 
-    Serial.print("Registers injected in sensor by GNU Octave for verification: ");
+    Serial.print("Registers injected in sensor: ");
     for (reg = 0; reg < 8; ++reg) {
-      Serial.print(camReg[reg], DEC);//sent them back to GNU Octave for acknowledgment
+      Serial.print(camReg[reg], DEC);//sent them back to GNU Octave to be sure that everything is OK, may be removed
       Serial.print(" ");
     }
     Serial.println("");
 
     camReset();
     camSetRegisters();// Send 8 registers to the sensor
-    camReadPicture(); // get pixels, GNU Octave reads them on serial and does the rest of the job
+    camReadPicture(); // get pixels, dump them on serial, GNU Octave reads them and does the rest of the job
     Serial.println("");
     Serial.println("Image acquired");
     camReset();
@@ -89,7 +79,7 @@ digitalWrite(SIN, LOW);
 void camReset()
 {
 digitalWrite(CLOCK, HIGH);
-delayMicroseconds(1);
+delayMicroseconds(1);//I think all delays may be removed, to check with you own board
 digitalWrite(CLOCK, LOW);
 delayMicroseconds(1);
 digitalWrite(RESET, LOW);
@@ -115,8 +105,7 @@ void camSetRegisters(void)
 void camSetReg(unsigned char regaddr, unsigned char regval)
 {
   unsigned char bitmask;
-  // Write 3-bit address.
-  for (bitmask = 0x4; bitmask >= 0x1; bitmask >>= 1) {
+  for (bitmask = 0x4; bitmask >= 0x1; bitmask >>= 1) {// Write 3-bit address.
     digitalWrite(CLOCK, LOW);
     delayMicroseconds(1);
     digitalWrite(LOAD, LOW);// ensure load bit is cleared from previous call
@@ -131,9 +120,7 @@ void camSetReg(unsigned char regaddr, unsigned char regval)
     delayMicroseconds(1);
   }
 
-  // Write 7 most significant bits of 8-bit data 
-  //(I do not understand why, the command is 8 bits... /BOICHOT)
-  for (bitmask = 128; bitmask >= 1; bitmask >>= 1) {
+  for (bitmask = 128; bitmask >= 1; bitmask >>= 1) {// Write 7 most significant bits of 8-bit data 
     digitalWrite(CLOCK, LOW);
     delayMicroseconds(1);
     if (regval & bitmask)
@@ -141,7 +128,7 @@ void camSetReg(unsigned char regaddr, unsigned char regval)
     else
       digitalWrite(SIN, LOW);
       delayMicroseconds(1);
-    if (bitmask == 1)
+    if (bitmask == 1)//Write at the end the least significant bit, weird but it's the protocol
       digitalWrite(LOAD, HIGH);// Assert load at rising edge of xck
     digitalWrite(CLOCK, HIGH);
     delayMicroseconds(1);
@@ -173,9 +160,8 @@ void camReadPicture()
   delayMicroseconds(1);
   digitalWrite(CLOCK, LOW);
   delayMicroseconds(1);
-
-  // Wait for READ to go high
-  while (1) {
+  
+  while (1) {// Wait for READ to go high
     digitalWrite(CLOCK, HIGH);
     delayMicroseconds(1);
     if (digitalRead(READ) == HIGH) // READ goes high with rising CLOCK
