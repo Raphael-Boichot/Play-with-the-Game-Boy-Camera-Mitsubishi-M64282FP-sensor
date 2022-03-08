@@ -131,7 +131,8 @@ void camSetReg(unsigned char regaddr, unsigned char regval)
     delayMicroseconds(1);
   }
 
-  // Write 7 most significant bits of 8-bit data.
+  // Write 7 most significant bits of 8-bit data 
+  //(I do not understand why, the command is 8 bits... /BOICHOT)
   for (bitmask = 128; bitmask >= 1; bitmask >>= 1) {
     digitalWrite(CLOCK, LOW);
     delayMicroseconds(1);
@@ -189,7 +190,7 @@ void camReadPicture()
     for (x = 0; x < 128; x++) {
       digitalWrite(CLOCK, LOW);
       delayMicroseconds(1);
-      pixel = analogRead(VOUT) >> 2;// get the next pixel, buffer it, and send it out over serial
+      pixel = analogRead(VOUT) >> 2;// The ADC is 10 bits, this sacrifies the 2 least significant bits to simplify transmission
       Serial.write(pixel);
       delayMicroseconds(1);  
       digitalWrite(CLOCK, HIGH);
