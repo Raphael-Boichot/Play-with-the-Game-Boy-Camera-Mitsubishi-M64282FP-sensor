@@ -1,9 +1,9 @@
 # Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor
 A set of codes to address the Mitsubishi M64282FP artificial retina with an Arduino Uno and a simple GNU Octave image saver. 
 
-There has been many previous attempts to interface this sensor. There is a famous [Arduino port](https://github.com/shimniok/avr-gameboy-cam) which have been coupled with a [java interface](https://www.bot-thoughts.com/2010/04/gameboy-camera-prototyping.html) or a [TI Calculator interface](https://www.cemetech.net/projects/item.php?id=54). However, these projects uses the same obsolete code originating from the [initial 2005 project](http://sophiateam.undrgnd.free.fr/microcontroller/camera/) as main engine.
+There has been many previous attempts to interface this sensor out of a Game Boy Camera. The most famous is an [AVR/Arduino port](https://github.com/shimniok/avr-gameboy-cam) which have been coupled with a [java interface](https://www.bot-thoughts.com/2010/04/gameboy-camera-prototyping.html) or a [TI Calculator interface](https://www.cemetech.net/projects/item.php?id=54). However, these projects use the same obsolete code originating from the [initial 2005 project](http://sophiateam.undrgnd.free.fr/microcontroller/camera/) as main engine.
 
-The project here is a complete reboot to ensure an Arduino/ESP8266/ESP32 compatibility with up to date commands. The code is much more simple than previous versions too. It embbeds only the strict necessary instructions to be interfaced via the serial protocol. A GNU Octave image reader is provided but any other way of sniffing the serial port to build the images is possible.
+The project here is a complete reboot from the initial AVR code to ensure an Arduino/ESP8266/ESP32 compatibility with up to date commands. The code is much more simple than previous versions too. It embbeds only the strict necessary instructions to be interfaced via the serial protocol. A GNU Octave image reader is provided but any other way of sniffing the serial port to build the images is possible.
 
 Required installations: [Arduino IDE](https://www.arduino.cc/en/software) and [GNU Octave](https://www.gnu.org/software/octave/index).
 
@@ -14,7 +14,7 @@ Images are cropped in 112x128 pixels into the Octave code but it reads and proce
 ## Pinout and setup
 ![setup](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/setup.png)
 
-The Pinout given here is the same than in the Arduino program. I'm not particularly proud of my setting but it does the job for the time of code developpement. Using an Arduino proto shield is strongly advised.
+The pinout given here is the same than in the Arduino program. I'm not particularly proud of my setting but it does the job for the time of code developpement. Using an Arduino proto shield is strongly advised.
 
 ## Example of image output
 ![results](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/results.png)
@@ -32,4 +32,4 @@ Vertical and horizontal artifacts seen on the Game Boy Camera are just a matter 
 These are what I think to be the registers used by the Game Boy Camera... Images taken with these settings are very similar at least.
 
 ## Known bugs
-The registers are sometimes not transmitted correctly by the serial protocol for unknown reason. I must admit that bi-directionnal serial protocol between Arduino and GNU Octave was a real pain to code from scratch and there are still some mysteries to me. I suspect the GNU Octave implementation of serial protocol to have many bugs.
+The registers are sometimes not transmitted correctly by the serial protocol for unknown reason. I must admit that bi-directionnal serial protocol between Arduino and GNU Octave was a real pain to code from scratch and there are still some mysteries to me. I suspect the GNU Octave implementation of serial protocol to have some bugs.
