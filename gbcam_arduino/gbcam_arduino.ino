@@ -120,7 +120,7 @@ void camSetReg(unsigned char regaddr, unsigned char regval)
     delayMicroseconds(1);
   }
 
-  for (bitmask = 128; bitmask >= 1; bitmask >>= 1) {// Write 7 most significant bits of 8-bit data 
+  for (bitmask = 128; bitmask >= 1; bitmask >>= 1) {// Write the 8-bits register
     digitalWrite(CLOCK, LOW);
     delayMicroseconds(1);
     if (regval & bitmask)
