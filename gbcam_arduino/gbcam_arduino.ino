@@ -23,7 +23,9 @@ int cycles=10; //time delay in processor cycles, to fit with your ESP/Arduino fr
 void setup()
 {
   Serial.begin(115200);
-  Serial.println("Camera initialisation");
+  while (!Serial) {
+    ; // wait for serial port to connect.
+  }
   pinMode(READ, INPUT);    // READ
   pinMode(CLOCK, OUTPUT);  // CLOCK
   pinMode(RESET, OUTPUT);  // RESET
@@ -32,9 +34,7 @@ void setup()
   pinMode(START, OUTPUT);  // START
   pinMode(LED, OUTPUT);    // LED
   camInit();
-  for (int i = 0; i < 100; i++) {
-  Serial.println("Camera initialised"); //Octave is not happy without being spammed initially, may be removed in portable device
-  }
+  Serial.println("Camera initialisation");
 }
 
 // there is no special command to trigger sensor, as soon as 8 registers are received, an image is requested to the sensor
@@ -46,7 +46,7 @@ void loop()//the main loop just reads 8 registers from GNU Octave and send an im
     for (reg = 0; reg < 8; ++reg) {
     camReg[reg] = Serial.read(); //read the 8 current registers sent by GNU Octave
     }
-    delay(100);//the delay here is just to see the LED flashing without slowing down the protocol, can be removed if necessary
+    delay(25);//the delay here is just to see the LED flashing without slowing down the protocol, can be removed if necessary
     digitalWrite(LED, LOW);
 
     Serial.print("Registers injected in sensor: ");
