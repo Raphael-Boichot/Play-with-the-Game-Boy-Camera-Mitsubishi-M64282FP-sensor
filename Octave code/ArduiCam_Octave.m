@@ -4,9 +4,10 @@
 clear
 clc
 autoexposure='ON'%or OFF
-disp('--------------------------------------------')
-disp('|Beware, this code is for Octave ONLY !!!  |')
-disp('--------------------------------------------')
+disp('-----------------------------------------------------')
+disp('|Beware, this code is for Octave ONLY !!!           |')
+disp('|You can break the code with Ctrl+C on Editor Window|')
+disp('-----------------------------------------------------')
 pkg load image
 pkg load instrument-control
 arduinoObj = serialport("COM3",'baudrate',115200); %set the Arduino com port here
@@ -41,7 +42,6 @@ data = ReadToTermination(arduinoObj);
     fwrite(arduinoObj,char(register(k))); %send registers to Arduino
     end
     end;  
-
     if length(data)>1000 %This is an image coming
         offset=2; %First byte is always junk (do not know why, probably a Println LF)
         im=[];
@@ -89,9 +89,10 @@ data = ReadToTermination(arduinoObj);
           disp(['Autoexposure delta = ',num2str(delta)])
           disp(['Autoexposure rg2 = ',num2str(reg2)])
           disp(['Autoexposure rg3 = ',num2str(reg3)])
+          disp(['Exposure time = ',num2str(reg3*16e-6+reg2*255*16e-6),' seconds'])
           
-          if not(reg2==0); reg3=reg3-min(10*round(delta),255);end;
-          if reg2==0; reg3=reg3-round(0.1*delta);end;
+          if not(reg2==0); reg3=reg3-min(20*round(delta),255);end;
+          if reg2==0; reg3=reg3-round(0.5*delta);end;
           
           if reg3>255;
             reg3=reg3-255;
@@ -103,6 +104,9 @@ data = ReadToTermination(arduinoObj);
           end;
           if reg2<0;reg2=0;end;
           if reg3<0;reg3=0;end;
+          if reg2>255;reg2=255;end;
+          if reg3>255;reg3=255;end;          
+          
         end
 end
 end
