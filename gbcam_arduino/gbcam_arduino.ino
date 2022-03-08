@@ -128,7 +128,7 @@ void camSetReg(unsigned char regaddr, unsigned char regval)
     else
       digitalWrite(SIN, LOW);
       delayMicroseconds(1);
-    if (bitmask == 1)//Write at the end the least significant bit, I do not see the interest of not sending everything at once
+    if (bitmask == 1)//Write at the end the least significant bit, LOAD must be high first at this step
       digitalWrite(LOAD, HIGH);// Assert load at rising edge of xck
     digitalWrite(CLOCK, HIGH);
     delayMicroseconds(1);
