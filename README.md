@@ -36,6 +36,9 @@ The registers are sometimes not transmitted correctly by the serial protocol for
 
 The code is also sluggish as hell due to the ADC of Arduino (it can render one image every two seconds). I've tried to use the [Analog read fast method](https://github.com/avandalen/avdweb_AnalogReadFast), which for sure increases the refresh rate (by a factor of 2 approximately), but renders the code incompatible with ESP8266/ESP32. So the code is given as it. It is certainly not optimal, feel free to improve it, but it works "out of the box".
 
-Finally the autoexposure mode proposed in Octave is coded for the registers entered by default. Changing the filtering kernels also modifies the setpoint for autoexposure which leads to disappointing results. The autoexposure in its current form is rather primitive: it just modifies exposure time so that the average of raw data from an image targets a certain value. I assume that modifying both exposure time and gain, or taking into account the range of raw values and not the average would perhaps lead to something more efficient and universal.
+The autoexposure mode proposed in Octave is coded for the registers entered by default. Changing the filtering kernels also modifies the setpoint for autoexposure which leads to disappointing results. The autoexposure in its current form is rather primitive: it just modifies exposure time so that the average of raw data from an image targets a certain value. I assume that modifying both exposure time and gain, or taking into account the range of raw values and not the average would perhaps lead to something more efficient and universal.
+
+Finally, using a Mitsubishi M64282FP artificial retina is less and less interesting from a technical point of view with the availability of simplier way to display images from Arduino/ESP/Raspberry with dedicated shields. Game Boy Camera is also becoming more and more expensive and enter progressively the hype of retro stuff. So the idea here is more to play with the sensor without destroying a Game Boy Camera to see how advanced was the sensor for 1998 !
+
 
 
