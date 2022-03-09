@@ -26,6 +26,7 @@ reg6=0b00000001;%X7 X6 X5 X4 X3 X2 X1 X0 filtering kernels
 reg7=0b00000111;%E3 E2 E1 E0 I V2 V1 V0 set Vref to 1 volts... because
 reg0=0b00111111;%Z1 Z0 O5 O4 O3 O2 O1 O0 zero point calibration and output reference voltage, set offset voltage to 1 volts to have 0-2 volts peak to peak voltages
 
+
 while flag==0 %infinite loop
   register=[reg0 reg1 reg2 reg3 reg4 reg5 reg6 reg7];%free setting
   %register=[155 0 20 0 1 0 1 7];%Typical minimal settings (the image is smooth)
@@ -33,14 +34,15 @@ while flag==0 %infinite loop
 data=[];
 data = ReadToTermination(arduinoObj);
 
-  if not(length(data)>1000)
+  if not(length(data)>100)
   disp(data);
   end
   
     if not(isempty(strfind(data,'Ready'))); %Inject the registers
     for k=1:1:8
     fwrite(arduinoObj,char(register(k))); %send registers to Arduino
-    end
+  end
+  pause(0.1)
     end;  
     if length(data)>1000 %This is an image coming
         offset=2; %First byte is always junk (do not know why, probably a Println LF)
@@ -92,7 +94,7 @@ data = ReadToTermination(arduinoObj);
           disp(['Exposure time = ',num2str(reg3*16e-6+reg2*255*16e-6),' seconds'])
           
           if not(reg2==0); reg3=reg3-min(20*round(delta),255);end;
-          if reg2==0; reg3=reg3-round(0.5*delta);end;
+          if reg2==0; reg3=reg3-round(0.2*delta);end;
           
           if reg3>255;
             reg3=reg3-255;
@@ -105,8 +107,8 @@ data = ReadToTermination(arduinoObj);
           if reg2<0;reg2=0;end;
           if reg3<0;reg3=0;end;
           if reg2>255;reg2=255;end;
-          if reg3>255;reg3=255;end;          
-          
+          if reg3>255;reg3=255;end;
+          if reg2==0;reg2=0;end;          
         end
 end
 end
