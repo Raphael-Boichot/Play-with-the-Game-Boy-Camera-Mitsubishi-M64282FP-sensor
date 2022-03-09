@@ -19,7 +19,7 @@ The pinout given here is the same than in the Arduino program. I'm not particula
 ## Example of image output
 ![results](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/results.png)
 
-You can notice that 2D edge enhancement (on the right) creates image artifacts (vertical streaks and horizontal splitting of image exposure) well known from the Game Boy Camera freaks. In consequence, these artifacts are intrinsic to the M64282FP sensor and not a bug into the Game Boy Camera code implementation. I weared the same black jacket on the two images and you can see the infrared fluorescence on the left one (with outdoor ligth), the sensor being particularly sensitive to it.
+You can notice that 2D edge enhancement (on the right) creates image artifacts (vertical streaks and horizontal splitting of image exposure) well known from the Game Boy Camera freaks. In consequence, these artifacts are intrinsic to the M64282FP sensor and not a bug into the Game Boy Camera code implementation. I weared the same black jacket on the two images and you can see the infrared fluorescence on the left one (with outdoor ligth), the sensor being particularly sensitive to it. I was anyway impressed by the sensor sensitivity in very low light conditions. On the contrary, I find that the sensor performs not that well in daylight.
 
 ## Example of image artifacts
 ![results](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/Artifacts.png)
@@ -31,7 +31,7 @@ Vertical and horizontal artifacts seen on the Game Boy Camera are just a matter 
 
 These are what I think to be the registers used by the Game Boy Camera... Images taken with these settings are very similar at least.
 
-## Known limitations
+## Known limitations and perspectives
 The registers are sometimes not transmitted correctly by the serial protocol for unknown reason (probably some timing trick of the serial protocol). I must admit that bi-directionnal serial protocol between Arduino and GNU Octave was a real pain to code and there are still some mysteries to me. 
 
 The code is also sluggish as hell due to the ADC of Arduino (it can render one image every two seconds). I've tried to use the [Analog read fast method](https://github.com/avandalen/avdweb_AnalogReadFast), which for sure increases the refresh rate (by a factor of 2 approximately), but renders the code incompatible with ESP8266/ESP32. So the code is given as it. It is certainly not optimal, feel free to improve it, but it works "out of the box".
