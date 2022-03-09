@@ -1,31 +1,28 @@
 //Simplified and completely rewritten by Raphaël BOICHOT in 2022/03/07 to be Arduino/ESP8266/ESP32 compatible
 //from a code of Laurent Saint-Marcel (lstmarcel@yahoo.fr) written in 2005/07/05
-//once cleaned and updated, the code is in fact damn simple to understand contrary to the original code
+//once cleaned and updated, the code is in fact damn simple to understand
 //the ADC of ESP/Arduino is very slow (successive approximations) compared to Game Boy Camera (Flash ADC).  
 //ADC slowness is the bottleneck of the code, just reading 128x128 pixels take 1.8 seconds
-//to perform live image rendering, the use of an external flash ADC is probably mandatory or use https://github.com/avandalen/avdweb_AnalogReadFast
+//to perform live image rendering, the use of an external flash ADC is probably mandatory or try using https://github.com/avandalen/avdweb_AnalogReadFast
 
 #define NOP __asm__ __volatile__ ("nop\n\t") //// delay 62.5ns on a 16MHz Arduino
 
-int VOUT = A3; //Analog signal from sensor, read shortly after clock is set low, converted to 10 bits by Arduino/ESP ADC then reduced to 8-bits for transmission
-int READ = 8; //Read image signal, goes high on rising clock
+int VOUT =  A3; //Analog signal from sensor, read shortly after clock is set low, converted to 10 bits by Arduino/ESP ADC then reduced to 8-bits for transmission
+int READ =  8; //Read image signal, goes high on rising clock
 int CLOCK = 9; //Clock input, pulled down internally, no specification given for frequency
 int RESET = 10; //system reset, pulled down internally, active low, sent on rising edge of clock
-int LOAD = 11; //parameter set enable, pulled down internally, Raise high as you clear the last bit of each register you send
-int SIN = 12; //parameter input, pulled down internally
+int LOAD =  11; //parameter set enable, pulled down internally, Raise high as you clear the last bit of each register you send
+int SIN =   12; //parameter input, pulled down internally
 int START = 13; //Image sensing start, pulled down internally, has to be high before rising CLOCK
-int LED = 4; //just for additionnal LED on D4, not essential to the protocol
+int LED =   4; //just for additionnal LED on D4, not essential to the protocol
 
-unsigned char camReg[8] = {155,0,1,0,1,0,1,7}; //default value, can be used for debug, is erased anyway by Octave
+unsigned char camReg[8]; //registers
 unsigned char reg;
 int cycles=10; //time delay in processor cycles, to fit with your ESP/Arduino frequency, here for Arduino Uno, about 0.62 µs
 
 void setup()
 {
   Serial.begin(115200);
-  while (!Serial) {
-    ; // wait for serial port to connect.
-  }
   pinMode(READ, INPUT);    // READ
   pinMode(CLOCK, OUTPUT);  // CLOCK
   pinMode(RESET, OUTPUT);  // RESET
@@ -34,14 +31,14 @@ void setup()
   pinMode(START, OUTPUT);  // START
   pinMode(LED, OUTPUT);    // LED
   camInit();
-  Serial.println("Camera initialisation");
+  Serial.println("Ready for transmission");
+  delay(25);// just to be sure that the registers are sent on Octave side
 }
 
 // there is no special command to trigger sensor, as soon as 8 registers are received, an image is requested to the sensor
 void loop()//the main loop just reads 8 registers from GNU Octave and send an image to serial in 8-bits binary
 {
-  Serial.println("Ready for injecting registers"); //Go for sending registers on GNU Octave side
-  if (Serial.available() > 0) {// do I receive a byte ?
+  if (Serial.available() == 8) {// do I have 8 bytes into the read buffer ?
     digitalWrite(LED, HIGH);
     for (reg = 0; reg < 8; ++reg) {
     camReg[reg] = Serial.read(); //read the 8 current registers sent by GNU Octave
@@ -62,21 +59,19 @@ void loop()//the main loop just reads 8 registers from GNU Octave and send an im
     Serial.println("");
     Serial.println("Image acquired");
     camReset();
-    Serial.println("sensor reset");
-}
+    Serial.println("Sensor reset");
+    Serial.println("Ready for transmission");
+    delay(25);// just to be sure that the registers are sent on Octave side
+  }
+} //end of loop
 
-} //end of main code//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// PRIVATE FUNCTIONS
-
-// Allow a lag in processor cycles to maintain signals long enough
-void camDelay()
+void camDelay()// Allow a lag in processor cycles to maintain signals long enough
 {
 for (int i = 0; i < cycles; i++) NOP;
 }
 
-// Initialise the IO ports for the camera
-void camInit()
+void camInit()// Initialise the IO ports for the camera
 {
 digitalWrite(CLOCK, LOW);
 digitalWrite(RESET, HIGH);
@@ -85,13 +80,10 @@ digitalWrite(START, LOW);
 digitalWrite(SIN, LOW);
 }
 
-// Sends a 'reset' pulse to the AR chip.
-// START:  CLOCK Rising Edge
-// FINISH: CLOCK Just before Falling Edge
-void camReset()
+void camReset()// Sends a RESET pulse to sensor
 {
 digitalWrite(CLOCK, HIGH);
-camDelay();//I think all delays may be removed, to check with you own board
+camDelay();
 digitalWrite(CLOCK, LOW);
 camDelay();
 digitalWrite(RESET, LOW);
@@ -102,19 +94,14 @@ digitalWrite(RESET, HIGH);
 camDelay();
 }
 
-// Reset the camera and set the camera's 8 registers
-// from the locally stored values 
-void camSetRegisters(void)
+void camSetRegisters(void)// Sets the sensor 8 registers
 {
   for (reg = 0; reg < 8; ++reg) {
     camSetReg(reg, camReg[reg]);
   }
 }
 
-// Sets one of the 8 8-bit registers in the AR chip.
-// START:  CLOCK Falling Edge
-// FINISH: CLOCK Just before Falling Edge
-void camSetReg(unsigned char regaddr, unsigned char regval)
+void camSetReg(unsigned char regaddr, unsigned char regval)// Sets one of the 8 8-bit registers in the sensor
 {
   unsigned char bitmask;
   for (bitmask = 0x4; bitmask >= 0x1; bitmask >>= 1) {// Write 3-bit address.
@@ -148,14 +135,10 @@ void camSetReg(unsigned char regaddr, unsigned char regval)
   }
 }
 
-// Take a picture, read it and send it through the serial port.
-// START:  CLOCK Falling Edge
-// FINISH: CLOCK Just before Rising Edge
-void camReadPicture()
+void camReadPicture()// Take a picture, read it and send it through the serial port.
 {
   unsigned int pixel;       // Buffer for pixel read in
   int x, y;
-
   // Camera START sequence
   digitalWrite(CLOCK, LOW);
   camDelay();// ensure load bit is cleared from previous call
