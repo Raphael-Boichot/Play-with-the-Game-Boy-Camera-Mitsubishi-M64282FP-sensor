@@ -1,4 +1,4 @@
-% Raphael BOICHOT 13/02/2022 
+% Raphael BOICHOT 13/02/2022
 % for any question : raphael.boichot@gmail.com
 
 clear
@@ -17,7 +17,7 @@ num_image=1;
 error=imread('Error.png');
 mkdir('./images/')
 
-reg1=0b01100000;%N VH1 VH0 G4 G3 G2 G1 G0 
+reg1=0b01100000;%N VH1 VH0 G4 G3 G2 G1 G0
 reg2=0b00000001;%C17 C16 C15 C14 C13 C12 C11 C10 / exposure time by 4096 ms steps (max 1.0486 s)
 reg3=0b00000000;%C07 C06 C05 C04 C03 C02 C01 C00 / exposure time by 16 µs steps (max 4096 ms)
 reg4=0b00000010;%P7 P6 P5 P4 P3 P2 P1 P0 filtering kernels
@@ -28,39 +28,39 @@ reg0=0b00111111;%Z1 Z0 O5 O4 O3 O2 O1 O0 zero point calibration and output refer
 
 
 while flag==0 %infinite loop
-  register=[reg0 reg1 reg2 reg3 reg4 reg5 reg6 reg7];%free setting
-  %register=[155 0 20 0 1 0 1 7];%Typical minimal settings (the image is smooth)
-  %register=[128 96 100 0 2 5 1 7];%Typical register setting used by the GB camera with 2D edge enhancement
-data=[];
-data = ReadToTermination(arduinoObj);
-
-  if not(length(data)>100)
-  disp(data);
-  end
-  
+    register=[reg0 reg1 reg2 reg3 reg4 reg5 reg6 reg7];%free setting
+    %register=[155 0 20 0 1 0 1 7];%Typical minimal settings (the image is smooth)
+    %register=[128 96 100 0 2 5 1 7];%Typical register setting used by the GB camera with 2D edge enhancement
+    data=[];
+    data = ReadToTermination(arduinoObj);
+    
+    if not(length(data)>100)
+        disp(data);
+    end
+    
     if not(isempty(strfind(data,'Ready'))); %Inject the registers
-    for k=1:1:8
-    fwrite(arduinoObj,char(register(k))); %send registers to Arduino
-  end
-    end;  
+        for k=1:1:8
+            fwrite(arduinoObj,char(register(k))); %send registers to Arduino
+        end
+    end;
     if length(data)>1000 %This is an image coming
         offset=2; %First byte is always junk (do not know why, probably a Println LF)
         im=[];
         if length(data)>=16386
-          for i=1:1:128 %We get the full image, 5 lines are junk at bottom, top is glitchy due to amplifier artifacts
-              for j=1:1:128
-                  im(i,j)=double(data(offset));
-                  offset=offset+1;
-              end
-          end
-        raw=im; %We keep the raw data just in case
-        im=im(9:end-8,:); %We get the intersting part of the image, what a Game Boy Camera displays for example
+            for i=1:1:128 %We get the full image, 5 lines are junk at bottom, top is glitchy due to amplifier artifacts
+                for j=1:1:128
+                    im(i,j)=double(data(offset));
+                    offset=offset+1;
+                end
+            end
+            raw=im; %We keep the raw data just in case
+            im=im(9:end-8,:); %We get the intersting part of the image, what a Game Boy Camera displays for example
         end
-      
+        
         if length(data)<16386 % not enough data whatever the reason
-        im=error(:,:,1);
+            im=error(:,:,1);
         end
-      
+        
         subplot(1,2,1)
         imagesc(im)
         colormap gray
@@ -86,28 +86,28 @@ data = ReadToTermination(arduinoObj);
         num_image=num_image+1;
         
         if autoexposure=='ON'
-          delta=moyenne-160;
-          disp(['Autoexposure delta = ',num2str(delta)])
-          disp(['Autoexposure rg2 = ',num2str(reg2)])
-          disp(['Autoexposure rg3 = ',num2str(reg3)])
-          disp(['Exposure time = ',num2str(reg3*16e-6+reg2*255*16e-6),' seconds'])
-          
-          if not(reg2==0); reg3=reg3-min(20*round(delta),255);end;
-          if reg2==0; reg3=reg3-round(0.2*delta);end;
-          
-          if reg3>255;
-            reg3=reg3-255;
-            reg2=reg2+1;
-          end;
-          if reg3<0;
-            reg3=reg3+255;
-            reg2=reg2-1;
-          end;
-          if reg2<0;reg2=0;end;
-          if reg3<0;reg3=0;end;
-          if reg2>255;reg2=255;end;
-          if reg3>255;reg3=255;end;
-          if reg2==0;reg2=0;end;          
+            delta=moyenne-160;
+            disp(['Autoexposure delta = ',num2str(delta)])
+            disp(['Autoexposure rg2 = ',num2str(reg2)])
+            disp(['Autoexposure rg3 = ',num2str(reg3)])
+            disp(['Exposure time = ',num2str(reg3*16e-6+reg2*255*16e-6),' seconds'])
+            
+            if not(reg2==0); reg3=reg3-min(20*round(delta),255);end;
+            if reg2==0; reg3=reg3-round(0.2*delta);end;
+            
+            if reg3>255;
+                reg3=reg3-255;
+                reg2=reg2+1;
+            end;
+            if reg3<0;
+                reg3=reg3+255;
+                reg2=reg2-1;
+            end;
+            if reg2<0;reg2=0;end;
+            if reg3<0;reg3=0;end;
+            if reg2>255;reg2=255;end;
+            if reg3>255;reg3=255;end;
+            if reg2==0;reg2=0;end;
         end
-end
+    end
 end
