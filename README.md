@@ -1,5 +1,5 @@
 # Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor
-A set of codes to address the Mitsubishi M64282FP artificial retina with an Arduino Uno and a simple GNU Octave image converter. 
+**A set of codes to address the Mitsubishi M64282FP artificial retina with an Arduino Uno and a simple GNU Octave image converter.**
 
 By Raphaël BOICHOT, February 2022. Last major update: 2022-03-09.
 
