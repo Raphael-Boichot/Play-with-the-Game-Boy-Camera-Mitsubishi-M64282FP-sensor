@@ -42,7 +42,6 @@ data = ReadToTermination(arduinoObj);
     for k=1:1:8
     fwrite(arduinoObj,char(register(k))); %send registers to Arduino
   end
-  pause(0.1)
     end;  
     if length(data)>1000 %This is an image coming
         offset=2; %First byte is always junk (do not know why, probably a Println LF)
