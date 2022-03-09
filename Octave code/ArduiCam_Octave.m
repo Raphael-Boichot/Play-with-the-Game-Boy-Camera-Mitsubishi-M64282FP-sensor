@@ -107,7 +107,7 @@ while flag==0 %infinite loop
             if reg3<0;reg3=0;end;
             if reg2>255;reg2=255;end;
             if reg3>255;reg3=255;end;
-            if reg2==0;reg2=1;end;
+            if reg3==0&&reg2==0;reg3=1;end;%minimal exposure time
         end
     end
 end
