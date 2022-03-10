@@ -34,7 +34,7 @@ void setup()
   pinMode(LED, OUTPUT);    // LED
   camInit();
   Serial.println("Ready for transmission");
-  delay(25);// just to be sure that the registers are sent on Octave side
+  //delay(25);// just to be sure that the registers are sent on Octave side
 }
 
 // there is no special command to trigger sensor, as soon as 8 registers are received, an image is requested to the sensor
@@ -45,7 +45,7 @@ void loop()//the main loop just reads 8 registers from GNU Octave and send an im
     for (reg = 0; reg < 8; ++reg) {
     camReg[reg] = Serial.read(); //read the 8 current registers sent by GNU Octave
     }
-    delay(25);//the delay here is just to see the LED flashing without slowing down the protocol, can be removed if necessary
+    //delay(25);//the delay here is just to see the LED flashing without slowing down the protocol, can be removed if necessary
     digitalWrite(LED, LOW);
 
     Serial.print("Registers injected in sensor: ");
@@ -63,7 +63,7 @@ void loop()//the main loop just reads 8 registers from GNU Octave and send an im
     camReset();
     Serial.println("Sensor reset");
     Serial.println("Ready for transmission");
-    delay(25);// just to be sure that the registers are sent on Octave side
+    //delay(25);// just to be sure that the registers are sent on Octave side
   }
 } //end of loop
 
@@ -169,8 +169,8 @@ void camReadPicture()// Take a picture, read it and send it through the serial p
     for (x = 0; x < 128; x++) {
       digitalWrite(CLOCK, LOW);
       camDelay();
-      pixel = analogRead(VOUT) >> 2;// The ADC is 10 bits, this sacrifies the 2 least significant bits to simplify transmission
-      //pixel = analogReadFast(VOUT) >> 2;
+      //pixel = analogRead(VOUT) >> 2;// The ADC is 10 bits, this sacrifies the 2 least significant bits to simplify transmission
+      pixel = analogReadFast(VOUT) >> 2;
       Serial.write(pixel);
       camDelay();  
       digitalWrite(CLOCK, HIGH);
@@ -178,12 +178,12 @@ void camReadPicture()// Take a picture, read it and send it through the serial p
     } // end for x
   } /* for y */
 
-  while (digitalRead(READ) == HIGH) { // Go through the remaining rows
-    digitalWrite(CLOCK, LOW);
-    camDelay();  
-    digitalWrite(CLOCK, HIGH);
-    camDelay();  
-  }
+//  while (digitalRead(READ) == HIGH) { // Go through the remaining rows
+//    digitalWrite(CLOCK, LOW);
+//    camDelay();  
+//    digitalWrite(CLOCK, HIGH);
+//    camDelay();  
+//  }
   digitalWrite(CLOCK, LOW);
   camDelay();  
 }
