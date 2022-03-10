@@ -15,15 +15,15 @@ arduinoObj = serialport("COM3",'baudrate',2000000); %set the Arduino com port he
 flag=0;
 num_image=1;
 error=imread('Error.png');
-%mkdir('./images/')
+mkdir('./images/')
 
 reg1=0b01100000;%N VH1 VH0 G4 G3 G2 G1 G0
 reg2=0b00000001;%C17 C16 C15 C14 C13 C12 C11 C10 / exposure time by 4096 ms steps (max 1.0486 s)
-reg3=0b00000000;%C07 C06 C05 C04 C03 C02 C01 C00 / exposure time by 16 Âµs steps (max 4096 ms)
+reg3=0b00000000;%C07 C06 C05 C04 C03 C02 C01 C00 / exposure time by 16 µs steps (max 4096 ms)
 reg4=0b00000010;%P7 P6 P5 P4 P3 P2 P1 P0 filtering kernels
 reg5=0b00000001;%M7 M6 M5 M4 M3 M2 M1 M0 filtering kernels
 reg6=0b00000001;%X7 X6 X5 X4 X3 X2 X1 X0 filtering kernels
-reg7=0b00000111;%E3 E2 E1 E0 I V2 V1 V0 set Vref to 1 volts... because
+reg7=0b00000011;%E3 E2 E1 E0 I V2 V1 V0 set Vref to 1 volts... because
 reg0=0b00111111;%Z1 Z0 O5 O4 O3 O2 O1 O0 zero point calibration and output reference voltage, set offset voltage to 1 volts to have 0-2 volts peak to peak voltages
 
 
@@ -63,12 +63,16 @@ while flag==0 %infinite loop
         
         subplot(2,2,1)
         imagesc(im)
-        title('Live view')
+        title('Live view 128x112')
         subplot(2,2,2)
         hist(reshape(im,1,[]),255)
         title('Pixel histogramm')
-        subplot(2,2,3:4)
-        plot([raw(end-5,:) raw(end-4,:) raw(end-3,:) raw(end-2,:) raw(end-1,:) raw(end,:)])
+        subplot(2,2,4)
+        plot(raw(end-5,:))
+        title('end-5 pixel line')
+        subplot(2,2,3)
+        imagesc(raw)
+        title('Raw 128x128 image')
         colormap(gray)
         drawnow
         %preparing for nice png output with autocontrast
@@ -76,6 +80,7 @@ while flag==0 %infinite loop
         maximum=max(max(im));
         moyenne=mean(mean(im));
         disp(['mininum=',num2str(minimum),' maximum=',num2str(maximum), ' moyenne=',num2str(moyenne)])
+        disp(['Number of unique pixel value: ',num2str(length(unique(reshape(im,1,[]))))])
         im=im-minimum;
         maximum=max(max(im));
         slope=255/maximum;
@@ -88,7 +93,7 @@ while flag==0 %infinite loop
         num_image=num_image+1;
         
         if autoexposure=='ON'
-            delta=moyenne-160;
+            delta=moyenne-70;
             disp(['Autoexposure delta = ',num2str(delta)])
             disp(['Autoexposure rg2 = ',num2str(reg2)])
             disp(['Autoexposure rg3 = ',num2str(reg3)])
