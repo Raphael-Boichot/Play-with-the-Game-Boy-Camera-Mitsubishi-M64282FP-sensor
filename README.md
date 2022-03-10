@@ -28,7 +28,7 @@ You can notice that 2D edge enhancement (on the right) creates image artifacts (
 ## Example of image artifacts
 ![results](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/Artifacts.png)
 
-Vertical and horizontal artifacts seen on the Game Boy Camera are just a matter of exposure level and intrinsic to the sensor. They are increased by the edge enhancement feature. Anyway, the image quality is remarquable seing the sensor resolution and the crap plastic lens used with it.
+Vertical and horizontal artifacts seen on the Game Boy Camera are just a matter of exposure level and are intrinsic to the sensor. They are increased by the edge enhancement feature and are always more or less present (for certain exposure settings both vertical and horizontal artifacts are even present). Anyway, the image quality is remarquable seing the sensor resolution and the crap plastic lens used with it. Edge enhancement globally improves the quality of image.
 
 ## Typical register setting used by the Game Boy Camera
 ![setting](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/setting.png)
