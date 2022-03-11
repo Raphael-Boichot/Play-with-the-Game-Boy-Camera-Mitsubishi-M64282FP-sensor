@@ -20,6 +20,8 @@ Reader may read with interest the [user manual of the M64283FP](https://github.c
 ## Exemple of normal pixel and dark pixel on the sensor
 ![dark pixel](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/Mitsubishi%20M64282FP_detail%20of%20light%20sensors.png)
 
+High resolution images of the Game Boy Camera sensor and details of the pixels can be found [here](https://github.com/Raphael-Boichot/Game-Boy-chips-decapping-project).
+
 ## Pinout and setup
 ![setup](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/setup.png)
 
