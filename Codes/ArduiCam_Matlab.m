@@ -23,16 +23,16 @@ reg3=0b00000000;%C07 C06 C05 C04 C03 C02 C01 C00 / exposure time by 16 µs steps 
 reg4=0b00000010;%P7 P6 P5 P4 P3 P2 P1 P0 filtering kernels
 reg5=0b00000001;%M7 M6 M5 M4 M3 M2 M1 M0 filtering kernels
 reg6=0b00000001;%X7 X6 X5 X4 X3 X2 X1 X0 filtering kernels
-reg7=0b00000011;%E3 E2 E1 E0 I V2 V1 V0 set Vref to 1 volts... because
-reg0=0b10100000;%Z1 Z0 O5 O4 O3 O2 O1 O0 zero point calibration and output reference voltage, set offset voltage to 1 volts to have 0-2 volts peak to peak voltages
+reg7=0b00000011;%E3 E2 E1 E0 I V2 V1 V0 set Vref
+reg0=0b10100000;%Z1 Z0 O5 O4 O3 O2 O1 O0 zero point calibration and output offset voltage
 
 
 while flag==0 %infinite loop
     register=[reg0 reg1 reg2 reg3 reg4 reg5 reg6 reg7];%free setting
     reg2=double(reg2);
     reg3=double(reg3);
-    %register=[155 0 20 0 1 0 1 7];%Typical minimal settings (the image is smooth)
-    %register=[128 96 100 0 2 5 1 7];%Typical register setting used by the GB camera with 2D edge enhancement
+    %register=[155 0 1 0 1 0 1 7];%Typical minimal settings (the image is smooth)
+    %register=[128 96 1 0 2 5 1 7];%Typical register setting used by the GB camera with 2D edge enhancement
     data=[];
     data = readline(arduinoObj);
     if not(strlength(data)>100)
