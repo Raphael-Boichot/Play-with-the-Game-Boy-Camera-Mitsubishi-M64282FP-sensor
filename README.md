@@ -17,6 +17,9 @@ Images are cropped in 112x128 pixels into the Octave code but it reads and proce
 
 Reader may read with interest the [user manual of the M64283FP](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/Mitsubishi%20Integrated%20Circuit%20M64283FP%20Image%20Sensor.pdf), the next sensor of the series, which is much more detailed about what may be the function of the undocumented pixels area called "dark pixels column" (dark level calibration) and how to set the offset voltage practically (it must be ideally equal to the output of this "dark pixels column"). Some forbidden states, probably common to the two sensors, are also described. Apart from some new registers and features, the M64283FP seems to share many functions and settings of the M64282FP.
 
+## Exemple of normal pixel and dark pixel on the sensor
+![dark pixel](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/Mitsubishi%20M64282FP_detail%20of%20light%20sensors.png)
+
 ## Pinout and setup
 ![setup](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/setup.png)
 
