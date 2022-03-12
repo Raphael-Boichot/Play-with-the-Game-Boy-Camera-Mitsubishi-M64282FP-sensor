@@ -46,9 +46,10 @@ while flag==0 %infinite loop
         offset=2; %First byte is always junk (do not know why, probably a Println LF)
         im=[];
         if length(data)>=16386
+            data=double(data);
             for i=1:1:128 %We get the full image, 5 lines are junk at bottom, top is glitchy due to amplifier artifacts
                 for j=1:1:128
-                    im(i,j)=double(data(offset));
+                    im(i,j)=data(offset);
                     offset=offset+1;
                 end
             end
@@ -67,7 +68,7 @@ while flag==0 %infinite loop
         imagesc(raw)
         title('Raw 128x128 image')
         subplot(1,3,3)        
-        hist(reshape(im,1,[]),255)
+        hist(data,50)
         title('Pixel histogramm')
         colormap(gray)
         drawnow

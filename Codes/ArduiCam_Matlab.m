@@ -71,7 +71,7 @@ while flag==0 %infinite loop
         title('Raw 128x128 image')
         colormap(gray)
         subplot(1,3,3)        
-        hist(reshape(im,1,[]),255)
+        hist(data,50)
         title('Pixel histogramm')
         colormap(gray)
         drawnow
