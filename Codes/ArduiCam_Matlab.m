@@ -62,19 +62,7 @@ while flag==0 %infinite loop
         if length(data)<16385 % not enough data whatever the reason
             im=error(:,:,1);
         end
-        
-        subplot(1,3,1)
-        imagesc(im)
-        title('Live view 128x112')
-        subplot(1,3,2)
-        imagesc(raw)
-        title('Raw 128x128 image')
-        colormap(gray)
-        subplot(1,3,3)        
-        hist(data,50)
-        title('Pixel histogramm')
-        colormap(gray)
-        drawnow
+
         %preparing for nice png output with autocontrast
         minimum=min(min(im));
         maximum=max(max(im));
@@ -86,6 +74,25 @@ while flag==0 %infinite loop
         slope=255/maximum;
         im=im*slope;
         im=uint8(im);
+        
+        bayer=Bayer_dithering(im,8,[0 84 168 255]);%second argument is the order
+        subplot(2,2,1)
+        imagesc(im)
+        title('Live view 128x112')
+        subplot(2,2,2)
+        imagesc(raw)
+        title('Raw 128x128 image')
+        colormap(gray)
+        title('Dithered image')
+        subplot(2,2,3)
+        imagesc(bayer)
+        subplot(2,2,4)        
+        hist(data,50)
+        title('Pixel histogramm')
+        colormap(gray)
+        drawnow
+        
+        
         im=imresize(im,4,'nearest');
         imwrite(im,['./images/Arduicam_',num2str(num_image),'.png'])
         %end nice png output with autocontrast
