@@ -53,4 +53,3 @@ Finally, using a Mitsubishi M64282FP artificial retina is less and less interest
 - Embedding the auto-exposure feature, currently made by Octave/Matlab, into the Arduino code, add an SD shield (storing raw binary data on SD) and make a standalone capture device. Would necessitate an external code to rebuild the images from raw data stored on SD card;
 - Shifting code to an ESP32 with LCD display, SD shield and embedding a [PNG converter](https://github.com/Raphael-Boichot/PNGenc) too. This will make a kind of primitive digital camera using the sensor;
 - Sending the images over wifi to make a primitive low-res webcam out of the sensor;
-- Emulating the Ordered Bayer dithering of the Game Boy Camera;
