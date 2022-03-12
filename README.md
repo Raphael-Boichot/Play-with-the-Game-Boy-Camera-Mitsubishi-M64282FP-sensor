@@ -48,3 +48,8 @@ As explained, the whole process to display an image is sluggish as hell due to t
 The autoexposure mode proposed in Octave is coded for the registers entered by default. Changing the filtering kernels also modifies the setpoint for autoexposure which leads to disappointing results. The autoexposure in its current form is rather primitive: it just modifies exposure time so that the average of raw data from an image targets a certain value. I assume that modifying both exposure time and gain, or taking into account the range of raw values and not the average would perhaps lead to something more efficient and universal.
 
 Finally, using a Mitsubishi M64282FP artificial retina is less and less interesting from a technical point of view in 2022, considering the availability of simplier way to display images from Arduino/ESP/Raspberry with dedicated shields. Game Boy Camera is also becoming more and more expensive as it becomes part of the videogames history. So the idea now is more to play with the sensor and its registers **without destroying a Game Boy Camera** to see how advanced the sensor was for 1998. And because playing with this sensor is in fact just fun.
+
+## Ideas
+- Translate the auto-exposure feature into the Arduino code, add an SD shield (storing raw binary data) and make a standalone device;
+- Shift to an ESP32 with LCD display, SD shield and embed a PNG converter too. This will make a kind of primitive digital camera using the sensor;
+- Sends data in wifi to make a primitive webcam out of the sensor.
