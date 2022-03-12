@@ -52,4 +52,4 @@ Finally, using a Mitsubishi M64282FP artificial retina is less and less interest
 ## Ideas
 - Translate the auto-exposure feature into the Arduino code, add an SD shield (storing raw binary data) and make a standalone device;
 - Shift to an ESP32 with LCD display, SD shield and embed a PNG converter too. This will make a kind of primitive digital camera using the sensor;
-- Sends data in wifi to make a primitive webcam out of the sensor.
+- Sends data over wifi too to make a primitive webcam out of the sensor.
