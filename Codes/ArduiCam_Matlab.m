@@ -83,15 +83,14 @@ while flag==0 %infinite loop
         imagesc(raw)
         title('Raw 128x128 image')
         colormap(gray)
-        title('Dithered image')
         subplot(2,2,3)
         imagesc(bayer)
+        title('Dithered image')
         subplot(2,2,4)        
         hist(data,50)
         title('Pixel histogramm')
         colormap(gray)
         drawnow
-        
         
         im=imresize(im,4,'nearest');
         imwrite(im,['./images/Arduicam_',num2str(num_image),'.png'])
