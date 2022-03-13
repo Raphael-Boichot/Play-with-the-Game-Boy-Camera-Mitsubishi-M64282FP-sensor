@@ -51,8 +51,8 @@ for i = 1:height
 end
 
 ImageNewBayer = uint8(output);
-
-subplot(1,2,1);imshow(GrayImage),title('Original');
-subplot(1,2,2);imshow(ImageNewBayer),title('Bayer-New');
+% 
+% subplot(1,2,1);imshow(GrayImage),title('Original');
+% subplot(1,2,2);imshow(ImageNewBayer),title('Bayer-New');
 
 %imwrite(ImageNewBayer, './output/Image8BitM3_4_Step_Gray.png');

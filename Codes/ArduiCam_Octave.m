@@ -23,8 +23,8 @@ reg3=0b00000000;%C07 C06 C05 C04 C03 C02 C01 C00 / exposure time by 16 µs steps
 reg4=0b00000010;%P7 P6 P5 P4 P3 P2 P1 P0 filtering kernels
 reg5=0b00000001;%M7 M6 M5 M4 M3 M2 M1 M0 filtering kernels
 reg6=0b00000001;%X7 X6 X5 X4 X3 X2 X1 X0 filtering kernels
-reg7=0b00000011;%E3 E2 E1 E0 I V2 V1 V0 set Vref
-reg0=0b10100000;%Z1 Z0 O5 O4 O3 O2 O1 O0 zero point calibration and output offset voltage
+reg7=0b00000111;%E3 E2 E1 E0 I V2 V1 V0 set Vref to 1 volts... because
+reg0=0b00111111;%Z1 Z0 O5 O4 O3 O2 O1 O0 zero point calibration and output reference voltage
 
 
 while flag==0 %infinite loop
@@ -71,9 +71,11 @@ while flag==0 %infinite loop
         maximum=max(max(im));
         slope=255/maximum;
         im=im*slope;
+        im=im-25;%some contrast adjustement
+        im=im*1.2;%some contrast adjustement
         im=uint8(im);
         
-        bayer=Bayer_dithering(im);%second argument is the order
+        bayer=Bayer_dithering(im);
         subplot(2,2,1)
         imagesc(im)
         title('Live view 128x112')
@@ -99,7 +101,7 @@ while flag==0 %infinite loop
         num_image=num_image+1;
         
         if autoexposure=='ON'
-            delta=moyenne-70;
+            delta=moyenne-160;
             disp(['Autoexposure delta = ',num2str(delta)])
             disp(['Autoexposure rg2 = ',num2str(reg2)])
             disp(['Autoexposure rg3 = ',num2str(reg3)])
