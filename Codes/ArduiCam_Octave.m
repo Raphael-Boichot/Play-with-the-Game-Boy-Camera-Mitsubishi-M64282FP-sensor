@@ -15,7 +15,7 @@ arduinoObj = serialport("COM3",'baudrate',2000000); %set the Arduino com port he
 flag=0;
 num_image=1;
 error=imread('Error.png');
-%mkdir('./images/')
+mkdir('./images/')
 
 reg1=0b01100000;%N VH1 VH0 G4 G3 G2 G1 G0
 reg2=0b00000001;%C17 C16 C15 C14 C13 C12 C11 C10 / exposure time by 4096 ms steps (max 1.0486 s)
