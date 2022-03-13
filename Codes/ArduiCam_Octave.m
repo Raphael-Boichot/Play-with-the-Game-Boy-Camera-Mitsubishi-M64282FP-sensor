@@ -73,7 +73,7 @@ while flag==0 %infinite loop
         im=im*slope;
         im=uint8(im);
         
-        bayer=Bayer_dithering(im,8,[0 84 168 255]);%second argument is the order
+        bayer=Bayer_dithering(im);%second argument is the order
         subplot(2,2,1)
         imagesc(im)
         title('Live view 128x112')
@@ -91,7 +91,9 @@ while flag==0 %infinite loop
         drawnow
         
         im=imresize(im,4,'nearest');
+        bayer=imresize(bayer,4,'nearest');
         imwrite(im,['./images/Arduicam_',num2str(num_image),'.png'])
+        imwrite(bayer,['./images/Arduicam_bayer_',num2str(num_image),'.png'])
         %end nice png output with autocontrast
         disp(['Saving Arduicam_',num2str(num_image),'.png'])
         num_image=num_image+1;

@@ -1,44 +1,58 @@
-function [y]=Bayer_dithering(x,num,palette)
-%palette=[0 90 180 255];
-minus(1:palette(2))=palette(1);
-minus(palette(2)+1:palette(3))=palette(2);
-minus(palette(3)+1:palette(4)+1)=palette(3);
-plus(1:palette(2))=palette(2);
-plus(palette(2)+1:palette(3))=palette(3);
-plus(palette(3)+1:palette(4)+1)=palette(4);
-B2=[1 2; 3 0];
-M=num*num;
-B4=[4*B2+1 4*B2+2; 4*B2+3 4*B2+0];
-B8=[4*B4+1 4*B4+2; 4*B4+3 4*B4+0];
-B16=[4*B8+1 4*B8+2; 4*B8+3 4*B8+0];
-B=[];
-if num==2
-    B=B2;
-elseif num==4
-    B=B4;
-elseif num==8
-    B=B8;
-elseif num==16
-    B=B16;
-else
-    disp('wrong value for bayer matrix');
-end
-T=round(255*(B+0.5)/M);
-h=(112/num)-1;
-w=(128/num)-1;
-y=zeros(112,128);
-for f=0:1:w
-    for e=0:1:h
-        for u=1:num
-            for q=1:num
-                r=(num*e)+u;
-                d=(num*f)+q;
-                if x(r,d)<=T(u,q);
-                    y(r,d)=minus(x(r,d)+1);
-                else
-                    y(r,d)=plus(x(r,d)+1);
-                end
+function [ImageNewBayer]=Bayer_dithering(GrayImage)
+%code from https://github.com/divertingPan/Bayer_Dither
+
+m1 = [[ 0 2 ];
+      [ 3 1 ]];
+  
+u1 = ones(2, 2);
+
+m2 = [[ 4*m1       4*m1+2*u1 ];
+      [ 4*m1+3*u1  4*m1+u1   ]];
+  
+u2 = ones(4, 4);
+
+m3 = [[ 4*m2       4*m2+2*u2 ];
+      [ 4*m2+3*u2  4*m2+u2   ]];
+
+
+%GrayImage = imread('./data/Arduicam_17.png');
+       
+[height, width] = size(GrayImage);
+
+output = zeros(height, width);
+for i = 1:height
+    for j = 1:width
+
+        BayerMatrix1 = m3(bitand(i,7) + 1, bitand(j,7) + 1) / 3;
+        BayerMatrix2 = 21.3333 + BayerMatrix1;
+        BayerMatrix3 = 21.3333 + BayerMatrix2;
+        ImageColor = GrayImage(i,j) / 4;
+
+        if (ImageColor >= 0 && ImageColor < 21)
+            if (ImageColor > BayerMatrix1)
+                output(i,j) = 84;
+            else
+                output(i,j) = 0;
+            end
+        elseif (ImageColor >= 21 && ImageColor < 43)
+            if (ImageColor >= BayerMatrix2)
+                output(i,j) = 171;
+            else
+                output(i,j) = 84;
+            end
+        else
+            if (ImageColor >= BayerMatrix3)
+                output(i,j) = 255;
+            else
+                output(i,j) = 171;
             end
         end
     end
 end
+
+ImageNewBayer = uint8(output);
+
+subplot(1,2,1);imshow(GrayImage),title('Original');
+subplot(1,2,2);imshow(ImageNewBayer),title('Bayer-New');
+
+%imwrite(ImageNewBayer, './output/Image8BitM3_4_Step_Gray.png');
