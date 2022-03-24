@@ -50,7 +50,7 @@ The autoexposure mode proposed in Octave is coded for the registers entered by d
 Finally, using a Mitsubishi M64282FP artificial retina is less and less interesting from a technical point of view in 2022, considering the availability of simplier way to display images from Arduino/ESP/Raspberry with dedicated shields. Game Boy Camera is also becoming more and more expensive as it becomes part of the videogames history. So the idea now is more to play with the sensor and its registers **without destroying a Game Boy Camera** to see how advanced the sensor was for 1998. And because playing with this sensor is in fact just fun.
 
 ## To do
-- Implement a dithering algorithm similar to the one coded into the Game Boy Camera.
+- Implement a dithering algorithm similar to the one coded into the Game Boy Camera reverse engineered in [this project](https://github.com/AntonioND/gbcam-rev-engineer).
 
 ## Ideas
 - Embedding the auto-exposure feature, currently made by Octave/Matlab, into the Arduino code, add an SD shield (storing raw binary data on SD) and make a standalone capture device. Would necessitate an external code to rebuild the images from raw data stored on SD card;
