@@ -35,7 +35,7 @@ You can notice that 2D edge enhancement (on the right) reveals image artifacts (
 ## Example of image output with lens modification
 ![results](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/Examples.png)
 
-The sensor resolution is high enough to perform convincing astrophotography. Used at the back of a film camera, the crop factor is approximately x10, wich means that the equivalent focal lenght is approximately multiplied by 10. On the right image of the moon, the lens is 300 mm for a 24x36 mm film, which corresponds to 3000 mm for the tiny Mitsubishi sensor.
+The sensor resolution is high enough to perform convincing astrophotography. Used at the back of a film camera, the crop factor is approximately x10, wich means that the equivalent focal lenght is multiplied by 10. On the right image of the moon, the lens is 300 mm for a 24x36 mm film, which corresponds to 3000 mm for the tiny Mitsubishi sensor.
 
 ## Example of image artifacts
 ![results](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/Artifacts.png)
