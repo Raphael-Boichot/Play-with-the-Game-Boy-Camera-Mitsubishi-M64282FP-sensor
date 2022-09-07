@@ -58,7 +58,7 @@ I've made some datalogging of the registers sent by a Game Boy Camera to the sen
 In any case, P, M and X registers are always 0x01, 0x00 and 0x01. These registers cannot be changed by the Game Boy Camera itself and are imposed by the MAC-GBD directly (this explains why the MAC-GBD can only take 5 bytes of registers and the sensor 8 bytes). Exposure strategies mimicking the real Game Boy Camera (as well as a description of all registers) are integrated into these two camera homebrew projects: [2bit PXLR Studio](https://github.com/HerrZatacke/2bit-pxlr-studio) and [Photo!](https://github.com/untoxa/gb-photo)
 
 ## Acknowledgments
--[Andreas Hahn](https://github.com/HerrZatacke) for Excel spreadsheet and fruitfull discussions;
--[Antonio Niño Díaz](https://github.com/AntonioND) for the deep sensor analysis;
--[Michael Shimniok](https://github.com/shimniok) for the source code I started from;
+- [Andreas Hahn](https://github.com/HerrZatacke) for Excel spreadsheet and fruitfull discussions;
+- [Antonio Niño Díaz](https://github.com/AntonioND) for the deep sensor analysis;
+- [Michael Shimniok](https://github.com/shimniok) for the source code I started from;
 
