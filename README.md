@@ -42,11 +42,6 @@ The sensor resolution is high enough to perform convincing astrophotography. Use
 
 Vertical and horizontal artifacts seen on the Game Boy Camera are just a matter of exposure level and are intrinsic to the sensor. They are increased by the edge enhancement feature and are always more or less present (for certain exposure settings both vertical and horizontal artifacts are even present). Anyway, the image quality is remarquable seing the sensor resolution and the crap plastic lens used with it. Edge enhancement globally improves the quality of image.
 
-## Typical register setting used by the Game Boy Camera
-![setting](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/setting.png)
-
-These are what I think to be the registers used by the Game Boy Camera... Images taken with these settings are very similar at least.
-
 ## Known limitations and perspectives
 As explained, the whole process to display an image is sluggish as hell due to the ADC (Analog-to-Digital Converter) of Arduino which uses a successive approximation method. I've tried to use the [Analog read fast library](https://github.com/avandalen/avdweb_AnalogReadFast), which for sure increases the refresh rate (by a factor of 2 approximately), but renders the code incompatible with ESP8266/ESP32. So the code is given in two versions, with the native analogRead() command for Arduino/ESP and with the analogReadFast() command for Arduino only. I think that ESPs will be much faster thanks to their high working frequency (240 MHz for ESP32 versus 16 MHz for Arduino Uno).
 
@@ -54,10 +49,9 @@ The autoexposure mode proposed in Octave is coded for the registers entered by d
 
 Finally, using a Mitsubishi M64282FP artificial retina is less and less interesting from a technical point of view in 2022, considering the availability of simplier way to display images from Arduino/ESP/Raspberry with dedicated shields. Game Boy Camera is also becoming more and more expensive as it becomes part of the videogames history. So the idea now is more to play with the sensor and its registers **without destroying a Game Boy Camera** to see how advanced the sensor was for 1998. And because playing with this sensor is in fact just fun.
 
-## To do
-- Implement a dithering algorithm similar to the one coded into the Game Boy Camera reverse engineered in [this project](https://github.com/AntonioND/gbcam-rev-engineer).
+## How it is used in real by a Game Boy Camera / exposure strategy.
+I've made some datalogging of the registers sent by a Game Boy Camera to the sensor. There are 3 main phases where the camera send registers to the sensor:
+- At boot to verify if the sensor is connected: [registers send during boot sequence](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Research%20on%20real%20Camera/Boot.xlsx)
+- When in use to take photos. The camera basically varies the output reference voltage, the gain and the exposure time to maximize image dynamic range. Gain and output reference voltage are just a function of exposure time. The camera varies exposure time by multiplying the current exposure time by a fixed value (1-1/4, 1-1/8, 1-1/16, 1-1/32, 1-1/64 multiplier on exposure time for over-exposed images, 1+1/8, 1+1/16, 1+1/32, 1+1/64 multiplier on exposure time for under-exposed images). The bigger the difference to a desired reference value, the bigger the multiplier. The camera probably uses a sum to compare to this reference (and calculate an error), for example the sum of bits in odd bytes and the sum of bits/2 in even bytes is a good approximation of scene illumination. As this calculation is slow, it needs a lookup table: it is present at range 0x02B300-0x02B3FF of the international rom. Here an example of registers sent in case of [very strong light variation](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Research%20on%20real%20Camera/Violent_exposure_change.xlsx) and in [normal use](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Research%20on%20real%20Camera/Normal_use.xlsx).
+- During sensor calibration. This calibration is triggered by [following the procedure here](https://github.com/Raphael-Boichot/Inject-pictures-in-your-Game-Boy-Camera-saves#part-3-calibrating-the-sensor) and must be made in complete dark. The exact registers modified by these calibration are unknown but it probably calculate at table of output reference voltage for the autoexposure strategy. Example of sensor sent during calibration can be found [here](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Research%20on%20real%20Camera/Factory_reset.xlsx).
 
-## Ideas
-- Embedding the auto-exposure feature, currently made by Octave/Matlab, into the Arduino code, add an SD shield (storing raw binary data on SD) and make a standalone capture device. Would necessitate an external code to rebuild the images from raw data stored on SD card;
-- Shifting code to an ESP32 with LCD display, SD shield and embedding a [PNG converter](https://github.com/Raphael-Boichot/PNGenc) too. This will make a kind of primitive digital camera using the sensor;
-- Sending the images over wifi to make a primitive low-res webcam out of the sensor;
