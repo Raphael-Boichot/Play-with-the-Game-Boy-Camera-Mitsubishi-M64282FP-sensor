@@ -56,7 +56,7 @@ I've made some datalogging of the registers sent by a Game Boy Camera to the sen
 - During sensor calibration. This calibration is triggered by [following the procedure here](https://github.com/Raphael-Boichot/Inject-pictures-in-your-Game-Boy-Camera-saves#part-3-calibrating-the-sensor) and must be made in complete dark. The exact registers modified by these calibration are unknown but it probably calculates a table of output reference voltage to use during the autoexposure strategy. Example of sensor sent during calibration can be found [here](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Research%20on%20real%20Camera/Factory_reset.xlsx).
 
 ## Acknowledgments
-[Andreas Hahn] for Excel spreadsheet and fruitfull discussions;
-[Antonio Niño Díaz] for the deep sensor analysis;
-[Michael Shimniok] for the source code I started from;
+[Andreas Hahn](https://github.com/HerrZatacke) for Excel spreadsheet and fruitfull discussions;
+[Antonio Niño Díaz](https://github.com/AntonioND) for the deep sensor analysis;
+[Michael Shimniok](https://github.com/shimniok) for the source code I started from;
 
