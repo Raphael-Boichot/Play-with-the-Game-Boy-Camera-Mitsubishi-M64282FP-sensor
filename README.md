@@ -57,6 +57,8 @@ I've made some datalogging of the registers sent by a Game Boy Camera to the sen
 
 ## Acknowledgments
 [Andreas Hahn](https://github.com/HerrZatacke) for Excel spreadsheet and fruitfull discussions;
+
 [Antonio Niño Díaz](https://github.com/AntonioND) for the deep sensor analysis;
+
 [Michael Shimniok](https://github.com/shimniok) for the source code I started from;
 
