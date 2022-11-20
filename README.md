@@ -59,7 +59,7 @@ In any case, P, M and X registers are always 0x01, 0x00 and 0x01. These register
 
 ## Attempt to made a mobile device with an ESP32
 
-I attempted to make a fully automated device to turn the sensor into a dashcam with an ESP32. Well, it kind of worked but the performance suffered from the poor performances of the ESP series, despite their good theoretical properties, in particular :
+I attempted to make a fully automated device to turn the sensor into a dashcam with an ESP32. Well, it kind of worked but the project very suffered from the poor performances of the ESP series, despite their good theoretical properties, in particular :
 - The SD libraries on ESP32 have an irreductible dead time of 2 seconds when creating a file, ruining any attemps to have a good refresh rate;
 - The ADC, despite the high frequency of the ESP32 (240 MHz), is not only slower than on Arduino Uno (16 MHz), but also totally unstable. It needs approximately averaging 5000-10000 digitalread on each pixel to get an accurate reading of voltage because it drifts constantly. Reading each pixel just one time leads to an image which intensity varies non-linearly with pixel reading order;
 - The adafruit libray to address ST7735 displays just barely works on ESP.
