@@ -62,10 +62,10 @@ In any case, P, M and X registers are always 0x01, 0x00 and 0x01. These register
 I attempted to make a fully automated device to turn the sensor into a dashcam with an ESP32. Well, it kind of worked but the project very suffered from the poor performances of the ESP series, despite their good theoretical properties, in particular :
 - The SD libraries on ESP32 have an irreductible dead time of 2 seconds when creating a file, ruining any attemps to have a good refresh rate;
 - The ADC, despite the high frequency of the ESP32 (240 MHz), is not only slower than on Arduino Uno (16 MHz), but also totally unstable. It needs approximately averaging 5000-10000 digitalread on each pixel to get an accurate reading of voltage because it drifts constantly. Reading each pixel just one time leads to an image which intensity varies non-linearly with pixel reading order;
-- The adafruit libray to address ST7735 displays just barely works on ESP.
+- The adafruit libray to address ST7735 displays just barely works on ESP;
 - The real specifications of the ESP32 functions are particularly badly documented and going farther than the piece of shit that serves as documentation for these devices is time consuming and not rewarding at all.
-In summary: ESP32 does a ton of things, but always badly. Stay on Arduino when possible.
 
+In summary: ESP32 does a ton of things, but always badly. Stay on Arduino when possible.
 So the project comes with a working code allowing you to build a 0.2 fps dashcam generating shitty images in BMP on SD card.
 
 ![prototype](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/ESP32_version_beta/Prototype_2022.jpg)
