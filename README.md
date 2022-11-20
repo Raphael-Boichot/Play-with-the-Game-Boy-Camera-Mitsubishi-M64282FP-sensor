@@ -68,6 +68,8 @@ I attempted to make a fully automated device to turn the sensor into a dashcam w
 In summary: ESP32 does a ton of things, but always badly. Stay on Arduino when possible.
 So the project comes with a working code allowing you to build a 0.2 fps dashcam generating shitty images in BMP on SD card.
 
+Enjoy the pain !
+
 ![prototype](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/ESP32_version_beta/Prototype_2022.jpg)
 
 ## Acknowledgments
