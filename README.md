@@ -3,7 +3,7 @@ By Raphaël BOICHOT, February 2022. Last major update: 2022-03-11.
 
 **A set of codes to bit bang the Mitsubishi M64282FP artificial retina with an Arduino Uno and a simple GNU Octave/Matlab image converter.**
 
-**Note 2023: this version is obsolete and reader may prefer trying the fancier [Raspberry Pi Pico version](https://github.com/Raphael-Boichot/Mitsubishi-M64282FP-dashcam).
+**Note 2023: this version is obsolete and reader may prefer trying the fancier [Raspberry Pi Pico version](https://github.com/Raphael-Boichot/Mitsubishi-M64282FP-dashcam).**
 
 There has been many previous attempts to interface this sensor out of a Game Boy Camera. The most famous is an [AVR/Arduino port](https://github.com/shimniok/avr-gameboy-cam) which have been coupled with a [java interface](https://www.bot-thoughts.com/2010/04/gameboy-camera-prototyping.html) or a [TI Calculator](https://www.cemetech.net/projects/item.php?id=54). However, these projects use the same obsolete code originating from the [initial 2005 project](http://sophiateam.undrgnd.free.fr/microcontroller/camera/) as main engine.
 
