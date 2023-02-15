@@ -1,4 +1,4 @@
-//Simplified and completely rewritten by Raphaël BOICHOT in 2022/03/07 to be Arduino/ESP8266/ESP32 compatible
+//Simplified and completely rewritten by Raphaël BOICHOT in 2023-02-15 to be simple and Arduino compatible
 //from a code of Laurent Saint-Marcel (lstmarcel@yahoo.fr) written in 2005/07/05
 //once cleaned and updated, the code is in fact damn simple to understand
 //the ADC of ESP/Arduino is very slow (successive approximations) compared to Game Boy Camera (Flash ADC).
@@ -53,7 +53,6 @@ void setup()
   Serial.println("Ready for transmission");
 }
 
-// there is no special command to trigger sensor, as soon as 8 registers are received, an image is requested to the sensor
 void loop()//that's all folks !
 {
   take_a_picture();
