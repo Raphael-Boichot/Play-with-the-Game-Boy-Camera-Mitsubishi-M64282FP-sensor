@@ -29,7 +29,6 @@ int LED =   4; //just for additionnal LED on D4, not essential to the protocol
   reg6=0b00000001;%X7 X6 X5 X4 X3 X2 X1 X0 filtering kernels
   reg7=0b00000011;%E3 E2 E1 E0 I V2 V1 V0 set Vref
 */
-//the ADC resolution is 0.8 mV (3.3/2^12, 12 bits) cut to 12.9 mV (8 bits), registers are close of those from the Game Boy Camera in mid light
 //With these registers, the output voltage is between 0.58 and 3.04 volts (on 3.3 volts).
 unsigned char camReg[8] = {0b10011111, 0b11101000, 0b00000001, 0b00000000, 0b00000001, 0b000000000, 0b00000001, 0b00000011}; //registers
 unsigned char v_min = 27; //minimal voltage returned by the sensor in 8 bits DEC (0.58 volts)
