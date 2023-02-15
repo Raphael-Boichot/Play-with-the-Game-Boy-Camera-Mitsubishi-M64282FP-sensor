@@ -1,5 +1,5 @@
 # Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor
-By Raphaël BOICHOT, February 2022. Last major update: 2022-03-11.
+By Raphaël BOICHOT, February 2022. Last major update: 2023-02-15.
 
 **A set of codes to bit bang the Mitsubishi M64282FP artificial retina with an Arduino Uno and a simple GNU Octave/Matlab image converter.**
 
@@ -9,9 +9,9 @@ There has been many previous attempts to interface this sensor out of a Game Boy
 
 The project here is a complete reboot from the initial AVR code to ensure an Arduino/ESP8266/ESP32 compatibility with up to date commands. The code is much more simple than previous versions too. It embbeds only the strict necessary instructions to be interfaced via the serial protocol. A GNU Octave/Matlab image reader is provided but any other way of sniffing the serial port to build the images is possible.
 
-Required installations: [Arduino IDE](https://www.arduino.cc/en/software) and [GNU Octave](https://www.gnu.org/software/octave/index).
+Required installations: [Arduino IDE](https://www.arduino.cc/en/software).
 
-Simply grab the eye ball of a Game Boy camera, connect to an Arduino Uno following the pinout (harvest or buy a JST ZH1.5MM 9 Pin connector for a conservative approach), upload the code to the board, run the GNU Octave code and enjoy your pixelated images in the ./images/ folder ! You can add a LED to D4 to see when registers are written into the sensor. Sensor registers are commented in the GNU Octave code and can be modified following the [M64282FP user manual](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/Mitsubishi%20Integrated%20Circuit%20M64282FP%20Image%20Sensor.pdf). The codes are heavily commented so that launching and modifying them to play with is quite straighforward. I say "quite" because the description and use of registers is a mess in the sensor user manual.
+Simply grab the eye ball of a Game Boy camera, connect to an Arduino Uno following the pinout (harvest or buy a JST ZH1.5MM 9 Pin connector for a conservative approach), upload the code to the board, run the Matlab code and enjoy your pixelated images in the ./images/ folder ! You can add a LED to D4 to see when registers are written into the sensor. Sensor registers are commented in the GNU Octave code and can be modified following the [M64282FP user manual](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/Mitsubishi%20Integrated%20Circuit%20M64282FP%20Image%20Sensor.pdf). The codes are heavily commented so that launching and modifying them to play with is quite straighforward. I say "quite" because the description and use of registers is a mess in the sensor user manual.
 
 How does it work ? Basically the Arduino waits for 8x8 bits of data (the registers) to be sent on the serial port. When the 8 bytes are received (sent by the Octave code), the Arduino injects them into the sensor and reads the 128x128 analog values of each pixel. The natively 10-bits converted values are truncated to 8-bits by removing the two least significant bits and sent back to the serial as a unique byte per pixel. Once finished, the Arduino enters a waiting mode for new registers. The Octave code reads the serial, process the stream of bytes into an image (vector to matrix ordering, cropping, thresholding and autocontrast) and modifies or not the registers (depending on pixel intensity) before injecting them again on the serial, and so on. The whole process take about 2 seconds, the bottleneck beeing the slow analog-to-digital conversion on Arduino.
 
