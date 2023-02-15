@@ -1,13 +1,11 @@
-//Simplified and completely rewritten by Raphaël BOICHOT in 2023-02-15 to be simple and Arduino compatible
+//Simplified and completely rewritten by Raphaël BOICHOT in 2023/02/15 to be Arduino
 //from a code of Laurent Saint-Marcel (lstmarcel@yahoo.fr) written in 2005/07/05
 //once cleaned and updated, the code is in fact damn simple to understand
-//the ADC of ESP/Arduino is very slow (successive approximations) compared to Game Boy Camera (Flash ADC).
-//ADC slowness is the bottleneck of the code, just reading 128x128 pixels take 1.8 seconds
+//the ADC of Arduino is very slow (successive approximations) compared to Game Boy Camera (Flash ADC).
+//ADC slowness is the bottleneck of the code, just reading 128x128 pixels and transmitting them to serial takes several seconds
 //to perform live image rendering, the use of an external flash ADC is probably mandatory or try using https://github.com/avandalen/avdweb_AnalogReadFast
 
 #include "avdweb_AnalogReadFast.h"
-
-#define NOP __asm__ __volatile__ ("nop\n\t") //// delay 62.5ns on a 16MHz Arduino
 
 int VOUT =  A3; //Analog signal from sensor, read shortly after clock is set low, converted to 10 bits by Arduino/ESP ADC then reduced to 8-bits for transmission
 int READ =  8; //Read image signal, goes high on rising clock
@@ -29,13 +27,12 @@ int LED =   4; //just for additionnal LED on D4, not essential to the protocol
   reg6=0b00000001;%X7 X6 X5 X4 X3 X2 X1 X0 filtering kernels
   reg7=0b00000011;%E3 E2 E1 E0 I V2 V1 V0 set Vref
 */
-//With these registers, the output voltage is between 0.58 and 3.04 volts (on 3.3 volts).
+// typical registers of a Game Boy Camera
 unsigned char camReg[8] = {0b10011111, 0b11101000, 0b00000001, 0b00000000, 0b00000001, 0b000000000, 0b00000001, 0b00000011}; //registers
 unsigned char v_min = 27; //minimal voltage returned by the sensor in 8 bits DEC (0.58 volts)
 unsigned char v_max = 155;//maximal voltage returned by the sensor in 8 bits DEC (3.04 volts)
 unsigned char reg;
 unsigned long int accumulator, counter, current_exposure, new_exposure;
-int cycles = 0; //time delay in processor cycles, to fit with your ESP/Arduino frequency, here for Arduino Uno, about 0.62 µs
 
 void setup()
 {
@@ -52,6 +49,7 @@ void setup()
   Serial.println("Ready for transmission");
 }
 
+// there is no special command to trigger sensor, as soon as 8 registers are received, an image is requested to the sensor
 void loop()//that's all folks !
 {
   take_a_picture();
@@ -105,11 +103,6 @@ void take_a_picture() {
   Serial.println("");
 }
 
-void camDelay()// Allow a lag in processor cycles to maintain signals long enough
-{
-  for (int i = 0; i < cycles; i++) NOP;
-}
-
 void camInit()// Initialise the IO ports for the camera
 {
   digitalWrite(CLOCK, LOW);
@@ -122,15 +115,10 @@ void camInit()// Initialise the IO ports for the camera
 void camReset()// Sends a RESET pulse to sensor
 {
   digitalWrite(CLOCK, HIGH);
-  camDelay();
   digitalWrite(CLOCK, LOW);
-  camDelay();
   digitalWrite(RESET, LOW);
-  camDelay();
   digitalWrite(CLOCK, HIGH);
-  camDelay();
   digitalWrite(RESET, HIGH);
-  camDelay();
 }
 
 void camSetRegisters(void)// Sets the sensor 8 registers
@@ -145,32 +133,24 @@ void camSetReg(unsigned char regaddr, unsigned char regval)// Sets one of the 8 
   unsigned char bitmask;
   for (bitmask = 0x4; bitmask >= 0x1; bitmask >>= 1) {// Write 3-bit address.
     digitalWrite(CLOCK, LOW);
-    camDelay();
     digitalWrite(LOAD, LOW);// ensure load bit is cleared from previous call
     if (regaddr & bitmask)
       digitalWrite(SIN, HIGH);// Set the SIN bit
     else
       digitalWrite(SIN, LOW);
-    camDelay();
     digitalWrite(CLOCK, HIGH);
-    camDelay();
     digitalWrite(SIN, LOW);// set the SIN bit low
-    camDelay();
   }
   for (bitmask = 128; bitmask >= 1; bitmask >>= 1) {// Write the 8-bits register
     digitalWrite(CLOCK, LOW);
-    camDelay();
     if (regval & bitmask)
       digitalWrite(SIN, HIGH);// set the SIN bit
     else
       digitalWrite(SIN, LOW);
-    camDelay();
     if (bitmask == 1)
       digitalWrite(LOAD, HIGH);// Assert load at rising edge of CLOCK
     digitalWrite(CLOCK, HIGH);
-    camDelay();
     digitalWrite(SIN, LOW);
-    camDelay();
   }
 }
 
@@ -180,34 +160,24 @@ void camReadPicture()// Take a picture, read it and send it through the serial p
   int x, y;
   // Camera START sequence
   digitalWrite(CLOCK, LOW);
-  camDelay();// ensure load bit is cleared from previous call
   digitalWrite(LOAD, LOW);
   digitalWrite(START, HIGH);// START rises before CLOCK
-  camDelay();
   digitalWrite(CLOCK, HIGH);
-  camDelay();
   digitalWrite(START, LOW);// START valid on rising edge of CLOCK, so can drop now
-  camDelay();
   digitalWrite(CLOCK, LOW);
-  camDelay();
   digitalWrite(LED, HIGH);
   while (1) {// Wait for READ to go high
     digitalWrite(CLOCK, HIGH);
-    camDelay();
     if (digitalRead(READ) == HIGH) // READ goes high with rising CLOCK
       break;
-    camDelay();
     digitalWrite(CLOCK, LOW);
-    camDelay();
   }
-  camDelay();
   digitalWrite(LED, LOW);
   accumulator = 0;
   counter = 0;
   for (y = 0; y < 128; y++) {
     for (x = 0; x < 128; x++) {
       digitalWrite(CLOCK, LOW);
-      camDelay();
       //pixel = analogRead(VOUT) >> 2;// The ADC is 10 bits, this sacrifies the 2 least significant bits to simplify transmission
       pixel = analogReadFast(VOUT) >> 2;
       //Serial.write(pixel);
@@ -215,18 +185,13 @@ void camReadPicture()// Take a picture, read it and send it through the serial p
       if (pixel <= 0x0F) Serial.print('0');
       Serial.print(pixel, HEX);
       Serial.print(" ");
-      camDelay();
       digitalWrite(CLOCK, HIGH);
-      camDelay();
     } // end for x
   } /* for y */
 
   while (digitalRead(READ) == HIGH) { // Go through the remaining rows
     digitalWrite(CLOCK, LOW);
-    camDelay();
     digitalWrite(CLOCK, HIGH);
-    camDelay();
   }
   digitalWrite(CLOCK, LOW);
-  camDelay();
 }
