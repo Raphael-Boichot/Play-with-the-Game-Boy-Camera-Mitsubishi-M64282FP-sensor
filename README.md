@@ -66,7 +66,7 @@ I attempted to make a fully automated device to turn the sensor into a dashcam w
 - The adafruit libray to address ST7735 displays just barely works on ESP. I could shift to other more performing libray but why ?
 - The real specifications of the ESP32 functions are particularly badly documented and going farther is time consuming and not rewarding at all.
 
-So the project comes with a working code allowing you to build a 0.2 fps dashcam generating shitty images in BMP on SD card. It can surely be improved but I preferd [moving on a Raspberry Pi Pico](https://github.com/Raphael-Boichot/Mitsubishi-M64282FP-dashcam).
+So the project comes with a working code allowing you to build a 0.2 fps dashcam generating shitty images in BMP on SD card. It can surely be improved but I prefered [moving on a Raspberry Pi Pico](https://github.com/Raphael-Boichot/Mitsubishi-M64282FP-dashcam) rather than continue loosing my time.
 
 ![prototype](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/ESP32_version_beta/Prototype_2022.jpg)
 
