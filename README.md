@@ -60,13 +60,7 @@ I've made some datalogging of the registers sent by a Game Boy Camera to the sen
 In any case, P, M and X registers are always 0x01, 0x00 and 0x01. These registers cannot be changed by the Game Boy Camera itself and are imposed by the MAC-GBD directly (this explains why the MAC-GBD can only take 5 bytes of registers and the sensor 8 bytes). Exposure strategies mimicking the real Game Boy Camera (as well as a description of all registers) are integrated into these two camera homebrew projects: [2bit PXLR Studio](https://github.com/HerrZatacke/2bit-pxlr-studio) and [Photo!](https://github.com/untoxa/gb-photo)
 
 ## Attempt to made a mobile device with an ESP32
-I attempted to make a fully automated device to turn the sensor into a dashcam with an ESP32. Well, it kind of worked but the project very suffered from the poor performances of the ESP series, despite their good theoretical properties, in particular :
-- The SD libraries I used on ESP32 have an irreductible dead time of 2 seconds when creating a file, ruining any attemps to have a good refresh rate. I may have conflicts somewhere;
-- The ADC, despite the high frequency of the ESP32 (240 MHz), is not only slower than on Arduino Uno (16 MHz), but also totally unprecise. It needs approximately averaging 5000-10000 digitalread on each pixel to get an accurate reading of voltage because it drifts constantly. Reading each pixel just one time leads to an image which intensity varies non-linearly with pixel reading order;
-- The adafruit libray to address ST7735 displays just barely works on ESP. I could shift to other more performing libray but why ?
-- The real specifications of the ESP32 functions are particularly badly documented and going farther is time consuming and not rewarding at all.
-
-So the project comes with a working code allowing you to build a 0.2 fps dashcam generating shitty images in BMP on SD card. It can surely be improved but I prefered [moving on a Raspberry Pi Pico](https://github.com/Raphael-Boichot/Mitsubishi-M64282FP-dashcam) rather than continue loosing my time.
+I attempted to make a fully automated device to turn the sensor into a dashcam with an ESP32. Well, it kind of worked but the project very suffered from the poor performances of the Arduino IDE ESP library I used, despite the good theoretical properties of ESPs. So the project comes with a working code allowing you to build a 0.2 fps dashcam saving images in BMP on SD card. It can surely be improved but I prefered [moving on a Raspberry Pi Pico](https://github.com/Raphael-Boichot/Mitsubishi-M64282FP-dashcam) rather than continue on this platform. It can surely be improved by using the Espressif dev environement rather than the Arduino IDE.
 
 ![prototype](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/ESP32_version_beta/Prototype_2022.jpg)
 
