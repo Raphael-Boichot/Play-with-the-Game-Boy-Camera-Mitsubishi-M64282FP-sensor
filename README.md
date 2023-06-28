@@ -1,5 +1,4 @@
 # Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor
-By Raphaël BOICHOT, February 2022. Last major update: 2023-02-15.
 
 **A set of codes to bit bang the Mitsubishi M64282FP artificial retina with an Arduino Uno and a simple GNU Octave/Matlab image converter.**
 
