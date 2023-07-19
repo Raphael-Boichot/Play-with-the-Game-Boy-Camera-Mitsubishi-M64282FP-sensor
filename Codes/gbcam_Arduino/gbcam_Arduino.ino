@@ -33,6 +33,7 @@ unsigned char v_min = 27; //minimal voltage returned by the sensor in 8 bits DEC
 unsigned char v_max = 155;//maximal voltage returned by the sensor in 8 bits DEC (3.04 volts)
 unsigned char reg;
 unsigned long int accumulator, counter, current_exposure, new_exposure;
+unsigned char max_line = 120; //last 5-6 rows of pixels contains dark pixel value and various artifacts, so I remove 8 to have a full tile line
 
 void setup()
 {
@@ -62,7 +63,6 @@ void loop()//that's all folks !
 int auto_exposure() {
   double exp_regs, new_regs, error, mean_value;
   unsigned int setpoint = (v_max + v_min) / 2;
-  unsigned char max_line = 120; //last 5-6 rows of pixels contains dark pixel value and various artifacts, so I remove 8 to have a full tile line
   exp_regs = camReg[2] * 256 + camReg[3];// I know, it's a shame to use a double here but we have plenty of ram
   mean_value = accumulator / (128 * max_line);
   error = setpoint - mean_value; // so in case of deviation, registers 2 and 3 are corrected
@@ -181,7 +181,9 @@ void camReadPicture()// Take a picture, read it and send it through the serial p
       //pixel = analogRead(VOUT) >> 2;// The ADC is 10 bits, this sacrifies the 2 least significant bits to simplify transmission
       pixel = analogReadFast(VOUT) >> 2;
       //Serial.write(pixel);
-      accumulator = accumulator + pixel;
+      if (y < max_line){
+        accumulator = accumulator + pixel;//reject the 8 last lines of pixels that contain junk
+      }
       if (pixel <= 0x0F) Serial.print('0');
       Serial.print(pixel, HEX);
       Serial.print(" ");
