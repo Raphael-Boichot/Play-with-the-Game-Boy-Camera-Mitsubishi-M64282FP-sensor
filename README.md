@@ -1,6 +1,6 @@
-# Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor
+## Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor
 
-**A set of codes to bit bang the Mitsubishi M64282FP artificial retina with an Arduino Uno and a simple GNU Octave/Matlab image converter.**
+**A set of codes to bitbang the Mitsubishi M64282FP artificial retina with a simple Arduino Uno**
 
 **Note 2023: this version is obsolete and reader may prefer trying the fancier [Raspberry Pi Pico version](https://github.com/Raphael-Boichot/Mitsubishi-M64282FP-dashcam).**
 
