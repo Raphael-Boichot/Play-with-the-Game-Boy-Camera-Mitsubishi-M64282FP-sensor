@@ -6,7 +6,7 @@
 
 There has been many previous attempts to interface this sensor out of a Game Boy Camera. The most famous is an [AVR/Arduino port](https://github.com/shimniok/avr-gameboy-cam) which have been coupled with a [java interface](https://www.bot-thoughts.com/2010/04/gameboy-camera-prototyping.html) or a [TI Calculator](https://www.cemetech.net/projects/item.php?id=54). However, these projects use the same C code originating from the old [initial 2005 project](http://sophiateam.undrgnd.free.fr/microcontroller/camera/).
 
-The project here is a reboot from the initial AVR code with Arduino IDE compatible commands and a basic autoexposure loop that allows the device to run autonomously. A Matlab serial sniffer is also provided but any other way of reading the serial port to get the image pixel data is possible.
+The project here is a reboot/cleaning of the initial AVR code with Arduino IDE compatible commands and a basic autoexposure loop that allows the device to run autonomously. A Matlab serial sniffer is also provided but any other way of reading the serial port to get the image pixel data is possible.
 
 Required installations: [Arduino IDE](https://www.arduino.cc/en/software).
 
@@ -43,8 +43,6 @@ Vertical and horizontal artifacts seen on the Game Boy Camera are just a matter 
 As explained, the whole process to display an image is sluggish as hell due to the ADC (Analog-to-Digital Converter) of Arduino which uses a successive approximation method. I've tried to use the [Analog read fast library](https://github.com/avandalen/avdweb_AnalogReadFast), which for sure increases the refresh rate (by a factor of 2 approximately), but renders the code incompatible with ESP8266/ESP32.
 
 The Arduino Uno is anyway not fast enough to bitbang the sensor at its optimal frequency of 1 MHz, which means that the exposure registers leads to exposure time much longer (about 4 times) than expected. Cool consequence: it behaves particularly well at night, bad consequence, it's impossible to take pictures in full daylight.
-
-Finally, using a Mitsubishi M64282FP artificial retina is less and less interesting from a technical point of view in 2023, considering the availability of simplier way to display images from Arduino/ESP/Raspberry with dedicated shields. Game Boy Camera is also becoming more and more expensive as it becomes part of the videogames history. So the idea now is more to play with the sensor and its registers **without destroying a Game Boy Camera** to see how advanced the sensor was for 1998. And because playing with this sensor is in fact just fun.
 
 ## Concluding remarks and some dive into the Game Boy Camera exposure strategy.
 I've made some datalogging of the registers sent by a Game Boy Camera to the sensor. There are 3 main phases where the camera sends registers to the sensor:
