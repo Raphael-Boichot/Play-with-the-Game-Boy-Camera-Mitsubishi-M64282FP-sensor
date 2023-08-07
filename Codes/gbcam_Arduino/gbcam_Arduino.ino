@@ -1,4 +1,4 @@
-//Simplified and completely rewritten by Raphaël BOICHOT in 2023/02/15 to be Arduino
+//Simplified and completely rewritten by Raphaël BOICHOT in 2023/02/15 to be Arduino IDE compatible 
 //from a code of Laurent Saint-Marcel (lstmarcel@yahoo.fr) written in 2005/07/05
 //once cleaned and updated, the code is in fact damn simple to understand
 //the ADC of Arduino is very slow (successive approximations) compared to Game Boy Camera (Flash ADC).
