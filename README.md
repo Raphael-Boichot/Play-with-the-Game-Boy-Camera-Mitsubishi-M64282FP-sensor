@@ -42,7 +42,7 @@ Vertical and horizontal artifacts seen on the Game Boy Camera are just a matter 
 ## Known limitations and perspectives
 As explained, the whole process to display an image is sluggish as hell due to the ADC (Analog-to-Digital Converter) of Arduino which uses a successive approximation method. I've tried to use the [Analog read fast library](https://github.com/avandalen/avdweb_AnalogReadFast), which for sure increases the refresh rate (by a factor of 2 approximately), but renders the code incompatible with ESP8266/ESP32.
 
-The Arduino Uno is anyway not fast enough to bitbang the sensor at its optimal frequency of 1 MHz, which means that the exposure registers leads to exposure time much longer (about 4 times) than expected. Cool consequence: it behaves particularly well at night, bad consequence, it's impossible to take pictures in full daylight.
+The Arduino Uno is anyway not fast enough to bitbang the sensor at its optimal frequency of 1 MHz, which means that the exposure registers leads to exposure time much longer (about 4 times) than expected. Cool consequence: it behaves particularly well at night, bad consequence, it's impossible to take pictures in full daylight without neutral filter.
 
 ## Concluding remarks and some dive into the Game Boy Camera exposure strategy.
 I've made some datalogging of the registers sent by a Game Boy Camera to the sensor. There are 3 main phases where the camera sends registers to the sensor:
