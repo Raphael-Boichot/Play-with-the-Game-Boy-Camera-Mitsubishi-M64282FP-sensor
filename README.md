@@ -2,7 +2,7 @@
 
 **A set of codes to bitbang the Mitsubishi M64282FP artificial retina with a simple Arduino Uno**
 
-**Note 2023: this version is obsolete and reader may prefer trying the fancier [Raspberry Pi Pico version](https://github.com/Raphael-Boichot/Mitsubishi-M64282FP-dashcam).**
+**Note 2023: despite being simple to build and funny to use this version is quite obsolete and reader may prefer trying the fancier [Raspberry Pi Pico version](https://github.com/Raphael-Boichot/Mitsubishi-M64282FP-dashcam).**
 
 There has been many previous attempts to interface this sensor out of a Game Boy Camera. The most famous is an [AVR/Arduino port](https://github.com/shimniok/avr-gameboy-cam) which have been coupled with a [java interface](https://www.bot-thoughts.com/2010/04/gameboy-camera-prototyping.html) or a [TI Calculator](https://www.cemetech.net/projects/item.php?id=54). However, these projects use the same C code originating from the old [initial 2005 project](http://sophiateam.undrgnd.free.fr/microcontroller/camera/).
 
@@ -10,7 +10,7 @@ The project here is a reboot/cleaning of the initial AVR code with Arduino IDE c
 
 Required installations: [Arduino IDE](https://www.arduino.cc/en/software).
 
-Simply grab the eye ball of a Game Boy camera, connect to an Arduino Uno following the pinout (harvest or buy a JST ZH1.5MM 9 Pin connector for a conservative approach), upload the code to the board, run the Matlab code and enjoy your pixelated images in the ./images/ folder ! You can add a LED to D4 to see exposure delay. The sensor natively outputs 128x128 pixels images but the 5 lower lines of pixels return calibration data (the pixels [are physically masked](https://github.com/Raphael-Boichot/Game-Boy-chips-decapping-project), see next chapter).
+Simply grab the eye ball of a Game Boy camera, connect to an Arduino Uno following the pinout (harvest or buy a JST ZH1.5MM 9 Pin connector for a conservative approach, or use [this tiny breakout board](https://github.com/Raphael-Boichot/Mitsubishi-M64282FP-dashcam/tree/main/PCB/128x160_PCB%20and%20schematic/Sensor%20to%20PCB%20adapter%20board)), upload the code to the board, run the Matlab code and enjoy your pixelated images in the ./images/ folder ! You can add a LED to D4 to see exposure delay. The sensor natively outputs 128x128 pixels images but the 5 lower lines of pixels return calibration data (the pixels [are physically masked](https://github.com/Raphael-Boichot/Game-Boy-chips-decapping-project), see next chapter).
 
 Reader may read with interest the [user manual of the M64283FP](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/Mitsubishi%20Integrated%20Circuit%20M64283FP%20Image%20Sensor.pdf), another sensor of the series, which is much more detailed about what is the function of the M64282FP masked pixels area (called "dark pixels column"). This is basically an area of obfuscated pixels on purpose. The manual indicates how to modify the registers practically from the signal extracted with these pixels (see the dark level calibration section). It is not mandatory to perform such tuning practically, as you can just post-process the digital pixel data.
 
