@@ -6,7 +6,7 @@
 
 There has been many previous attempts to interface this sensor out of a Game Boy Camera. The most famous is an [AVR/Arduino port](https://github.com/shimniok/avr-gameboy-cam) which have been coupled with a [java interface](https://www.bot-thoughts.com/2010/04/gameboy-camera-prototyping.html) or a [TI Calculator](https://www.cemetech.net/projects/item.php?id=54). However, these projects use the same C code originating from the old [initial 2005 project](http://sophiateam.undrgnd.free.fr/microcontroller/camera/).
 
-The project here is a reboot/cleaning of the initial AVR code with Arduino IDE compatible commands and a basic autoexposure loop that allows the device to run autonomously. A Matlab serial sniffer is also provided but any other way of reading the serial port to get the image pixel data is possible.
+The project here is a reboot/cleaning of the initial AVR code with Arduino IDE compatible commands and a basic autoexposure loop that allows the device to run autonomously with registers close to the ones of Game Boy Camera. A Matlab serial sniffer is also provided but any other way of reading the serial port to get the image pixel data may be use.
 
 Required installations: [Arduino IDE](https://www.arduino.cc/en/software).
 
