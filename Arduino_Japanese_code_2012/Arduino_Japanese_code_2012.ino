@@ -69,8 +69,8 @@ void loop() {
     Xck_H;
   }
 
-
-  //今回は4列4行毎に32×32画素を取得する the author made an error about sensor resolution
+  //the author made an error about sensor resolution in the initial code so I had to rewrite this part (I left most of the original comments besides that)
+  //今回は4列4行毎に32×32画素を取得する //display in 32*32 is quite fun to see, this is the native resolution of a mouse optical sensor
   for (int y = 1; y <= 128; y++) {//rewritten in 2023
     for (int x = 1; x <= 128; x++) {//rewritten in 2023
       Xck_L;
