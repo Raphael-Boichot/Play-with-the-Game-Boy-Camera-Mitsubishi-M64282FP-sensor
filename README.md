@@ -1,3 +1,5 @@
+**Note: this archive is no longer maintained since Januray 2024. Enjoy it as it is !**
+
 ## Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor
 
 **A set of codes to bitbang the Mitsubishi M64282FP artificial retina with a simple Arduino Uno**
