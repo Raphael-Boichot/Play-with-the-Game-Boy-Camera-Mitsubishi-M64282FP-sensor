@@ -24,6 +24,9 @@ High resolution images of the Game Boy Camera sensor and details of the pixels c
 
 The pinout given here is the same than in the Arduino program. I'm not particularly proud of my setting but it does the job for the time of code developpement. Using [the dedicated PCB](/PCB) is strongly advised.
 
+## Dedicated PCB for Arduino Uno
+![](PCB/PCB.png)
+
 ## Example of image output
 ![results](https://github.com/Raphael-Boichot/Play-with-the-Game-Boy-Camera-Mitsubishi-M64282FP-sensor/blob/main/Additionnal%20informations/results.png)
 
