@@ -2,6 +2,6 @@ This code... works, but not very smoothly. The image suffers artifacts due to po
 
 It is probably possible to rewrite everything but even well written the code will suffer an unexpected limitation: the ESP32 memory is limited to 115200 bytes whatever claims Espressif. I can't do much with that. [Jump here](https://github.com/Raphael-Boichot/Mitsubishi-M64282FP-dashcam) to see what a reliable hardware is able to.
 
-Final word from Espressif (still lying):
+Final word from Espressif: nah, still not...
 
 ![](/ESP32_version_beta/ESP32_specifications.png)
