@@ -9,7 +9,7 @@
 //#define MF64283FP
 
 int VOUT = A3;  //Analog signal from sensor, read shortly after clock is set low, converted to 10 bits by Arduino/ESP ADC then reduced to 8-bits for transmission
-int LED = 4;  //just for additionnal LED on D4, not essential to the protocol
+int LED = 4;    //just for additionnal LED on D4, not essential to the protocol
 #ifdef MF64283FP
 int TADD = 7;  //TADD register, for M64283FP only
 int STRB = 6;  //Strobe pin, for M64283FP only
@@ -40,12 +40,18 @@ unsigned char reg;
 unsigned long int accumulator, counter, current_exposure, new_exposure;
 unsigned char max_line = 120;  //last 5-6 rows of pixels contains dark pixel value and various artifacts, so I remove 8 to have a full tile line
 
+#ifdef MF64283FP
+///////////////////////////{ 0bSSSSSSSS, 0bEEEEEEEE };
+unsigned char camTADD[2] = { 0b00000000, 0b00000000 };  //additional registers 8 and 9, START and END of image area in tiles (16x16)
+#endif
+
 void setup() {
   Serial.begin(2000000);
 
 #ifdef MF64283FP
-  pinMode(TADD, INPUT);   // TADD
-  pinMode(STRB, OUTPUT);  // TADD
+  pinMode(TADD, OUTPUT);  // TADD
+  digitalWrite(TADD, HIGH);
+  pinMode(STRB, INPUT);  // TADD
 #endif
 
   pinMode(READ, INPUT);    // READ
@@ -108,7 +114,10 @@ void take_a_picture() {
   Serial.println("New image:");
   camReset();         // resets the sensor
   camSetRegisters();  // Send 8 registers to the sensor
-  camReadPicture();   // get pixels, dump them in RawCamData
+#ifdef MF64283FP
+  camSetRegistersTADD();
+#endif
+  camReadPicture();  // get pixels, dump them in RawCamData
   camReset();
   Serial.println("");
 }
@@ -131,11 +140,22 @@ void camReset()  // Sends a RESET pulse to sensor
   digitalWrite(RESET, HIGH);
 }
 
-void camSetRegisters(void)  // Sets the sensor 8 registers
+void camSetRegisters()  // Sets the sensor 8 registers
 {
   for (reg = 0; reg < 8; ++reg) {
     camSetReg(reg, camReg[reg]);
   }
+}
+
+void camSetRegistersTADD()  //Sets the sensor 2 ADDitional registers to TADD pin of the M64283FP (must be low)
+{
+#ifdef MF64283FP
+  digitalWrite(TADD, LOW);  //must be low just for these two registers, but must look at the datasheet again
+  for (int reg = 0; reg < 2; ++reg) {
+    camSetReg(reg + 1, camTADD[reg]);  //adress 0 with TADD LOW does not exist
+  }
+  digitalWrite(TADD, HIGH);  //back to default state
+#endif
 }
 
 void camSetReg(unsigned char regaddr, unsigned char regval)  // Sets one of the 8 8-bit registers in the sensor
