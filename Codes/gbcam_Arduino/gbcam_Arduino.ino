@@ -61,7 +61,7 @@ y occupies the 4 MSB, x the 4 LSBs
 
 // typical registers of a Game Boy Camera, goes well also for the 83FP sensor
 //////////////////////////{ 0bZZOOOOOO, 0bNVVGGGGG, 0bCCCCCCCC, 0bCCCCCCCC, 0bSAC_PPPP, 0bPPMOMMMM, 0bXXXXXXXX, 0bEEEEIVVV };
-unsigned char camReg[8] = { 0b10000000, 0b11100111, 0b00010000, 0b00000000, 0b00000001, 0b00000000, 0b00000001, 0b00000001 };  //registers
+unsigned char camReg[8] = { 0b10000000, 0b11100111, 0b00000100, 0b00000000, 0b00000001, 0b00000000, 0b00000001, 0b00000001 };  //registers
   /////////////////////////{ 0byyyyxxxx, 0byyyyxxxx };
   /////////////////////////{ 0bSSSSSSSS, 0bEEEEEEEE };
 unsigned char camTADD[2] = { 0b00000000, 0b00000000 };  //for M64283FP only
@@ -71,22 +71,23 @@ void setup() {
 
 #ifdef MF64283FP
   camReg[7] = camReg[7] | 0b01000000;  //use the correct 2D enhancement, black level calibration active by default
+  camReg[4] = camReg[4] | 0b00100000;  //the CL register must be set to "H" for random access mode
   //enter here the paremeters to allow random access to the sensor, see documentation
-  startX = 1;
-  startY = 0;
-  endX = 2;
-  endY = 16;
+  startX = 5;
+  startY = 5;
+  endX = 10;
+  endY = 10;
   x_tiles = endX - startX;  //tiles centered by default in random access mode for 83FP, must be even
   y_tiles = endY - startY;  //tiles centered by default in random access mode for 83FP, must be even
-  START_reg = (startY << 4) | startX;
-  END_reg = (endY << 4) | endX;
-  camTADD[1] = START_reg;
-  camTADD[2] = END_reg;
-  pinMode(TADD, OUTPUT);  // TADD
-  digitalWrite(TADD, HIGH);
-  pinMode(STRB, INPUT);  // TADD
+  START_reg = (startY << 4) | (startX & 0b00001111);
+  END_reg = (endY << 4) | (endX & 0b00001111);
+  camTADD[0] = START_reg;
+  camTADD[1] = END_reg;
 #endif
 
+  pinMode(TADD, OUTPUT);  // TADD
+  digitalWrite(TADD, HIGH);
+  pinMode(STRB, INPUT);    // STRB
   pinMode(READ, INPUT);    // READ
   pinMode(CLOCK, OUTPUT);  // CLOCK
   pinMode(RESET, OUTPUT);  // RESET
@@ -194,44 +195,51 @@ void camSetRegisters()  // Sets the sensor 8 registers
 
 void camSetRegistersTADD()  //Sets the sensor 2 ADDitional registers to TADD pin of the M64283FP (must be low)
 {
-#ifdef MF64283FP
   digitalWrite(TADD, LOW);  //must be low just for these two registers, but must look at the datasheet again
   for (int reg = 0; reg < 2; ++reg) {
     camSetReg(reg + 1, camTADD[reg]);  //adress 0 with TADD LOW does not exist
   }
   digitalWrite(TADD, HIGH);  //back to default state
-#endif
 }
 
 void camSetReg(unsigned char regaddr, unsigned char regval)  // Sets one of the 8 8-bit registers in the sensor
 {
   unsigned char bitmask;
+  Serial.print("Adress:");
   for (bitmask = 0x4; bitmask >= 0x1; bitmask >>= 1) {  // Write 3-bit address.
     digitalWrite(CLOCK, LOW);
     digitalWrite(LOAD, LOW);  // ensure load bit is cleared from previous call
-    if (regaddr & bitmask)
+    if (regaddr & bitmask) {
       digitalWrite(SIN, HIGH);  // Set the SIN bit
-    else
+      Serial.print("1");
+    } else {
       digitalWrite(SIN, LOW);
+      Serial.print("0");
+    }
     digitalWrite(CLOCK, HIGH);
     digitalWrite(SIN, LOW);  // set the SIN bit low
   }
+  Serial.print(" Byte:");
   for (bitmask = 128; bitmask >= 1; bitmask >>= 1) {  // Write the 8-bits register
     digitalWrite(CLOCK, LOW);
-    if (regval & bitmask)
+    if (regval & bitmask) {
       digitalWrite(SIN, HIGH);  // set the SIN bit
-    else
+      Serial.print("1");
+    } else {
       digitalWrite(SIN, LOW);
+      Serial.print("0");
+    }
     if (bitmask == 1)
       digitalWrite(LOAD, HIGH);  // Assert load at rising edge of CLOCK
     digitalWrite(CLOCK, HIGH);
     digitalWrite(SIN, LOW);
   }
+  Serial.println(" ");
 }
 
 void camReadPicture()  // Take a picture, read it and send it through the serial port.
 {
-  unsigned int pixel;  // Buffer for pixel read in
+  unsigned char pixel;  // Buffer for pixel read in
   int x, y;
   // Camera START sequence
   digitalWrite(CLOCK, LOW);
@@ -257,6 +265,8 @@ void camReadPicture()  // Take a picture, read it and send it through the serial
       pixel = analogReadFast(VOUT) >> 2;
       //Serial.write(pixel);
       accumulator = accumulator + pixel;  //reject the 8 last lines of pixels that contain junk
+      if (pixel > 255) pixel = 255;
+      if (pixel < 0) pixel = 0;
       if (pixel <= 0x0F) Serial.print('0');
       Serial.print(pixel, HEX);
       Serial.print(" ");
