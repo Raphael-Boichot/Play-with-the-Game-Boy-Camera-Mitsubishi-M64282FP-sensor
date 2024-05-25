@@ -10,8 +10,9 @@
 
 int VOUT = A3;   //Analog signal from sensor, read shortly after clock is set low, converted to 10 bits by Arduino/ESP ADC then reduced to 8-bits for transmission
 int LED = 4;     //just for additionnal LED on D4, not essential to the protocol
-int TADD = 7;    //TADD register, for M64283FP only
+int RED = 5;     //to show access time to ADC
 int STRB = 6;    //Strobe pin, for M64283FP only (UNUSED)
+int TADD = 7;    //TADD register, for M64283FP only
 int READ = 8;    //Read image signal, goes high on rising clock
 int CLOCK = 9;   //Clock input, pulled down internally, no specification given for frequency
 int RESET = 10;  //system reset, pulled down internally, active low, sent on rising edge of clock
@@ -73,10 +74,10 @@ void setup() {
   camReg[7] = camReg[7] | 0b01000000;  //use the correct 2D enhancement, black level calibration active by default
   camReg[4] = camReg[4] | 0b00100000;  //the CL register must be set to "H" for random access mode
   //enter here the paremeters to allow random access to the sensor, see documentation
-  startX = 5;
-  startY = 5;
-  endX = 10;
-  endY = 10;
+  startX = 0;
+  startY = 0;
+  endX = 16;
+  endY = 16;
   x_tiles = endX - startX;  //tiles centered by default in random access mode for 83FP, must be even
   y_tiles = endY - startY;  //tiles centered by default in random access mode for 83FP, must be even
   START_reg = (startY << 4) | (startX & 0b00001111);
@@ -85,8 +86,7 @@ void setup() {
   camTADD[1] = END_reg;
 #endif
 
-  pinMode(TADD, OUTPUT);  // TADD
-  digitalWrite(TADD, HIGH);
+  pinMode(TADD, OUTPUT);   // TADD
   pinMode(STRB, INPUT);    // STRB
   pinMode(READ, INPUT);    // READ
   pinMode(CLOCK, OUTPUT);  // CLOCK
@@ -95,6 +95,7 @@ void setup() {
   pinMode(SIN, OUTPUT);    // SIN
   pinMode(START, OUTPUT);  // START
   pinMode(LED, OUTPUT);    // LED
+  pinMode(RED, OUTPUT);    // LED
   camInit();
   Serial.println("Version for Arduino with Analog Read Fast");
   Serial.println("Ready for transmission");
@@ -195,11 +196,9 @@ void camSetRegisters()  // Sets the sensor 8 registers
 
 void camSetRegistersTADD()  //Sets the sensor 2 ADDitional registers to TADD pin of the M64283FP (must be low)
 {
-  digitalWrite(TADD, LOW);  //must be low just for these two registers, but must look at the datasheet again
   for (int reg = 0; reg < 2; ++reg) {
-    camSetReg(reg + 1, camTADD[reg]);  //adress 0 with TADD LOW does not exist
+    camSetRegTADD(reg + 1, camTADD[reg]);  //adress 0 with TADD LOW does not exist
   }
-  digitalWrite(TADD, HIGH);  //back to default state
 }
 
 void camSetReg(unsigned char regaddr, unsigned char regval)  // Sets one of the 8 8-bit registers in the sensor
@@ -229,10 +228,52 @@ void camSetReg(unsigned char regaddr, unsigned char regval)  // Sets one of the 
       digitalWrite(SIN, LOW);
       Serial.print("0");
     }
-    if (bitmask == 1)
+    if (bitmask == 1) {
       digitalWrite(LOAD, HIGH);  // Assert load at rising edge of CLOCK
+      digitalWrite(TADD, HIGH);  // Assert TADD at rising edge of CLOCK
+      Serial.print(" TADD:1");
+    }
     digitalWrite(CLOCK, HIGH);
     digitalWrite(SIN, LOW);
+  }
+  Serial.println(" ");
+}
+
+void camSetRegTADD(unsigned char regaddr, unsigned char regval)  // Sets one of the 8 8-bit registers in the sensor
+{
+  unsigned char bitmask;
+  Serial.print("Adress:");
+  for (bitmask = 0x4; bitmask >= 0x1; bitmask >>= 1) {  // Write 3-bit address.
+    digitalWrite(CLOCK, LOW);
+    digitalWrite(LOAD, LOW);  // ensure load bit is cleared from previous call
+    if (regaddr & bitmask) {
+      digitalWrite(SIN, HIGH);  // Set the SIN bit
+      Serial.print("1");
+    } else {
+      digitalWrite(SIN, LOW);
+      Serial.print("0");
+    }
+    digitalWrite(CLOCK, HIGH);
+    digitalWrite(SIN, LOW);  // set the SIN bit low
+  }
+  Serial.print(" Byte:");
+  for (bitmask = 128; bitmask >= 1; bitmask >>= 1) {  // Write the 8-bits register
+    digitalWrite(CLOCK, LOW);
+    if (regval & bitmask) {
+      digitalWrite(SIN, HIGH);  // set the SIN bit
+      Serial.print("1");
+    } else {
+      digitalWrite(SIN, LOW);
+      Serial.print("0");
+    }
+    if (bitmask == 1) {
+      digitalWrite(LOAD, HIGH);  // Assert load at rising edge of CLOCK
+      digitalWrite(TADD, LOW);   // Assert TADD at rising edge of CLOCK
+      Serial.print(" TADD:0");
+    }
+    digitalWrite(CLOCK, HIGH);
+    digitalWrite(SIN, LOW);
+    //digitalWrite(TADD, HIGH);   // normal state
   }
   Serial.println(" ");
 }
@@ -258,6 +299,7 @@ void camReadPicture()  // Take a picture, read it and send it through the serial
   digitalWrite(LED, LOW);
   accumulator = 0;
   counter = 0;
+  digitalWrite(RED, HIGH);
   for (y = 0; y < (y_tiles * 8); y++) {
     for (x = 0; x < x_tiles * 8; x++) {
       digitalWrite(CLOCK, LOW);
@@ -273,7 +315,7 @@ void camReadPicture()  // Take a picture, read it and send it through the serial
       digitalWrite(CLOCK, HIGH);
     }  // end for x
   }    /* for y */
-
+  digitalWrite(RED, LOW);
   while (digitalRead(READ) == HIGH) {  // Go through the remaining rows
     digitalWrite(CLOCK, LOW);
     digitalWrite(CLOCK, HIGH);
