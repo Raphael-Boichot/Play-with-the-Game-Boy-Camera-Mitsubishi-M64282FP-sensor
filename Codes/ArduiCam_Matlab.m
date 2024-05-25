@@ -9,37 +9,45 @@ disp('|You can break the code with Ctrl+C on Editor Window|')
 disp('-----------------------------------------------------')
 % pkg load image
 % pkg load instrument-control
-arduinoObj = serialport("COM4",2000000); %set the Arduino com port here
+arduinoObj = serialport("COM6",2000000); %set the Arduino com port here
 %set(arduinoObj, 'timeout',-1);
 flag=0;
 image_counter=0;
+x_tiles=0;
+y_tiles=0;
 mkdir ./image
 while flag==0 %infinite loop
     data = readline(arduinoObj);
-    if not(strlength(data)>100)
+    if not(length(char(data))>100)
         disp(data);
     end
-    
-    if strlength(data)>1000 %This is an image coming
+    if not(isempty(strfind(data,'x_tiles')));
+        str=char(data);
+        x_tiles=str2double(str(10:11));
+    end
+    if not(isempty(strfind(data,'y_tiles')));
+        str=char(data);
+        y_tiles=str2double(str(10:11));
+    end
+    if strlength(data)>64 %This is an image coming
         data=(char(data));
         offset=1; %First byte is always junk (do not know why, probably a Println LF)
         im=[];
-        if length(data)>=16385
-            for i=1:1:128 %We get the full image, 5 lines are junk at bottom, top is glitchy due to amplifier artifacts
-                for j=1:1:128
+        %if length(data)>=16385
+            for i=1:1:y_tiles*8 %We get the full image, 5 lines are junk at bottom, top is glitchy due to amplifier artifacts
+                for j=1:1:x_tiles*8
                     im(i,j)=hex2dec(data(offset:offset+1));
                     offset=offset+3;
                 end
             end
             raw=im; %We keep the raw data just in case
-            maximum=max(max(raw(1:120,:)));
-            minimum=min(min(raw(1:120,:)));
-            moyenne=mean(mean(raw(1:120,:)));
+            maximum=max(max(raw));
+            minimum=min(min(raw));
             figure(1)
             subplot(1,2,1);
-            histogram(raw(1:120,:),100)
-        end
-        image_display=uint8(raw(1:120,:)-minimum)*(255/(maximum-minimum));
+            histogram(raw,100)
+        %end
+        image_display=uint8(raw-minimum)*(255/(maximum-minimum));
         image_counter=image_counter+1;
         image_display=imresize(image_display,4,"nearest");
         imwrite(image_display,['./image/output_',num2str(image_counter),'.gif'],'gif');
