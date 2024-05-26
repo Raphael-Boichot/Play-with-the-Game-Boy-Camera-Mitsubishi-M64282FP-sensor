@@ -34,18 +34,22 @@ while flag==0 %infinite loop
         offset=1; %First byte is always junk (do not know why, probably a Println LF)
         im=[];
         %if length(data)>=16385
-            for i=1:1:y_tiles*8 %We get the full image, 5 lines are junk at bottom, top is glitchy due to amplifier artifacts
-                for j=1:1:x_tiles*8
+        for i=1:1:y_tiles*8 %We get the full image, 5 lines are junk at bottom, top is glitchy due to amplifier artifacts
+            for j=1:1:x_tiles*8
+                try
                     im(i,j)=hex2dec(data(offset:offset+1));
-                    offset=offset+3;
+                catch
+                    im(i,j)=0;
                 end
+                offset=offset+3;
             end
-            raw=im; %We keep the raw data just in case
-            maximum=max(max(raw));
-            minimum=min(min(raw));
-            figure(1)
-            subplot(1,2,1);
-            histogram(raw,100)
+        end
+        raw=im; %We keep the raw data just in case
+        maximum=max(max(raw));
+        minimum=min(min(raw));
+        figure(1)
+        subplot(1,2,1);
+        histogram(raw,100)
         %end
         image_display=uint8(raw-minimum)*(255/(maximum-minimum));
         image_counter=image_counter+1;
