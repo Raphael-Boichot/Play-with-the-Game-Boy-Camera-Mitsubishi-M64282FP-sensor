@@ -229,8 +229,8 @@ void camSetReg(unsigned char regaddr, unsigned char regval)  // Sets one of the 
       Serial.print("0");
     }
     if (bitmask == 1) {
-      digitalWrite(LOAD, HIGH);  // Assert load at rising edge of CLOCK
       digitalWrite(TADD, HIGH);  // Assert TADD at rising edge of CLOCK
+      digitalWrite(LOAD, HIGH);  // Assert load at rising edge of CLOCK
       Serial.print(" TADD:1");
     }
     digitalWrite(CLOCK, HIGH);
@@ -267,8 +267,8 @@ void camSetRegTADD(unsigned char regaddr, unsigned char regval)  // Sets one of 
       Serial.print("0");
     }
     if (bitmask == 1) {
-      digitalWrite(LOAD, HIGH);  // Assert load at rising edge of CLOCK
       digitalWrite(TADD, LOW);   // Assert TADD at rising edge of CLOCK
+      digitalWrite(LOAD, HIGH);  // Assert load at rising edge of CLOCK
       Serial.print(" TADD:0");
     }
     digitalWrite(CLOCK, HIGH);
