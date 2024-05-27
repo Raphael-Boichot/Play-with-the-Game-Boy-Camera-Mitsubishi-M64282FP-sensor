@@ -70,9 +70,11 @@ unsigned char camTADD[2] = { 0b00000000, 0b00000000 };  //for M64283FP only
 void setup() {
   Serial.begin(2000000);
 
-#ifdef MF64283FP
-  camReg[7] = camReg[7] | 0b01000000;  //use the correct 2D enhancement, black level calibration active by default
-  camReg[4] = camReg[4] | 0b00100000;  //the CL register must be set to "H" for random access mode
+#ifdef MF64283FP //random access mode
+  camReg[1] = camReg[1] & 0b00011111;  //N, VH1 and VH0 must be LOW for random access mode
+  camReg[4] = camReg[4] | 0b00100000;  //the CL register must be HIGH for random access mode
+  camReg[5] = camReg[5] | 0b00010000;  //the OB register must be HIGH for random access mode
+  camReg[7] = camReg[7] & 0b00001111;  //all E registers must be LOW for random access mode
   //enter here the paremeters to allow random access to the sensor, see documentation
   startX = 0;
   startY = 0;
@@ -87,7 +89,9 @@ void setup() {
 #endif
 
   pinMode(TADD, OUTPUT);   // TADD
+
   pinMode(STRB, INPUT);    // STRB
+  digitalWrite(TADD, HIGH);  // default state
   pinMode(READ, INPUT);    // READ
   pinMode(CLOCK, OUTPUT);  // CLOCK
   pinMode(RESET, OUTPUT);  // RESET
@@ -229,12 +233,13 @@ void camSetReg(unsigned char regaddr, unsigned char regval)  // Sets one of the 
       Serial.print("0");
     }
     if (bitmask == 1) {
-      digitalWrite(TADD, HIGH);  // Assert TADD at rising edge of CLOCK
       digitalWrite(LOAD, HIGH);  // Assert load at rising edge of CLOCK
       Serial.print(" TADD:1");
     }
     digitalWrite(CLOCK, HIGH);
     digitalWrite(SIN, LOW);
+    digitalWrite(CLOCK, LOW); //register is valid on falling fronts
+    digitalWrite(LOAD, LOW);  // come back to normal state
   }
   Serial.println(" ");
 }
@@ -268,12 +273,14 @@ void camSetRegTADD(unsigned char regaddr, unsigned char regval)  // Sets one of 
     }
     if (bitmask == 1) {
       digitalWrite(TADD, LOW);   // Assert TADD at rising edge of CLOCK
-      digitalWrite(LOAD, HIGH);  // Assert load at rising edge of CLOCK
+      digitalWrite(LOAD, HIGH);  // Assert LOAD at rising edge of CLOCK
       Serial.print(" TADD:0");
     }
     digitalWrite(CLOCK, HIGH);
     digitalWrite(SIN, LOW);
-    //digitalWrite(TADD, HIGH);   // normal state
+    digitalWrite(CLOCK, LOW); //register is valid on falling fronts
+    digitalWrite(LOAD, LOW);  // come back to normal state
+    digitalWrite(TADD, HIGH);   // come back to normal state
   }
   Serial.println(" ");
 }

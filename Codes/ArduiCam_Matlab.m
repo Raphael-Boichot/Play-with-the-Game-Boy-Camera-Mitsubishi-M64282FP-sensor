@@ -39,7 +39,7 @@ while flag==0 %infinite loop
                 try
                     im(i,j)=hex2dec(data(offset:offset+1));
                 catch
-                    im(i,j)=0;
+                    im(i,j)=im(i-1,j);
                 end
                 offset=offset+3;
             end
