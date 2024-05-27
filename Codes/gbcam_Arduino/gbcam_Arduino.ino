@@ -11,7 +11,7 @@
 int VOUT = A3;   //Analog signal from sensor, read shortly after clock is set low, converted to 10 bits by Arduino/ESP ADC then reduced to 8-bits for transmission
 int LED = 4;     //just for additionnal LED on D4, not essential to the protocol
 int RED = 5;     //to show access time to ADC
-int STRB = 6;    //Strobe pin, for M64283FP only (UNUSED)
+int STRB = 6;    //Strobe pin, for M64283FP only (UNUSED as it follows CLOCK)
 int TADD = 7;    //TADD register, for M64283FP only
 int READ = 8;    //Read image signal, goes high on rising clock
 int CLOCK = 9;   //Clock input, pulled down internally, no specification given for frequency
@@ -24,15 +24,14 @@ unsigned char v_min = 50;   //minimal voltage returned by the sensor in 8 bits D
 unsigned char v_max = 150;  //maximal voltage returned by the sensor in 8 bits DEC
 unsigned char reg;
 unsigned long int accumulator, counter, current_exposure, new_exposure;
-unsigned char startX = 0;     //for M64283FP only
-unsigned char startY = 0;     //for M64283FP only
-unsigned char endX = 16;      //for M64283FP only
-unsigned char endY = 16;      //for M64283FP only
-unsigned char x_tiles = 16;   //for M64282fp AND M64283FP
-unsigned char y_tiles = 16;   //for M64282fp AND M64283FP
-unsigned char START_reg = 0;  //for M64283FP only
-unsigned char END_reg = 0;    //for M64283FP only
-
+unsigned char startX;        //for M64283FP only
+unsigned char startY;        //for M64283FP only
+unsigned char endX;          //for M64283FP only
+unsigned char endY;          //for M64283FP only
+unsigned char START_reg;     //for M64283FP only
+unsigned char END_reg;       //for M64283FP only
+unsigned char x_tiles = 16;  //for M64282FP
+unsigned char y_tiles = 16;  //for M642823FP
 /*
   registers for the M64282FP sensor
   reg0=Z1 Z0 O5 O4 O3 O2 O1 O0 enable calibration with reg O/ O and V add themselves 
@@ -70,7 +69,7 @@ unsigned char camTADD[2] = { 0b00000000, 0b00000000 };  //for M64283FP only
 void setup() {
   Serial.begin(2000000);
 
-#ifdef MF64283FP //random access mode
+#ifdef MF64283FP                       //random access mode
   camReg[1] = camReg[1] & 0b00011111;  //N, VH1 and VH0 must be LOW for random access mode
   camReg[4] = camReg[4] | 0b00100000;  //the CL register must be HIGH for random access mode
   camReg[5] = camReg[5] | 0b00010000;  //the OB register must be HIGH for random access mode
@@ -80,26 +79,24 @@ void setup() {
   startY = 8;
   endX = 16;
   endY = 12;
-  x_tiles = endX - startX;  //tiles centered by default in random access mode for 83FP, must be even
-  y_tiles = endY - startY;  //tiles centered by default in random access mode for 83FP, must be even
+  x_tiles = endX - startX;  // random access range for 83FP, just used for Matlab through serial
+  y_tiles = endY - startY;  // random access range for 83FP, just used for Matlab through serial
   START_reg = (startY << 4) | (startX & 0b00001111);
   END_reg = (endY << 4) | (endX & 0b00001111);
   camTADD[0] = START_reg;
   camTADD[1] = END_reg;
 #endif
-
-  pinMode(TADD, OUTPUT);   // TADD
-
-  pinMode(STRB, INPUT);    // STRB
+  pinMode(TADD, OUTPUT);     // TADD
   digitalWrite(TADD, HIGH);  // default state
-  pinMode(READ, INPUT);    // READ
-  pinMode(CLOCK, OUTPUT);  // CLOCK
-  pinMode(RESET, OUTPUT);  // RESET
-  pinMode(LOAD, OUTPUT);   // LOAD
-  pinMode(SIN, OUTPUT);    // SIN
-  pinMode(START, OUTPUT);  // START
-  pinMode(LED, OUTPUT);    // LED
-  pinMode(RED, OUTPUT);    // LED
+  pinMode(STRB, INPUT);      // STRB
+  pinMode(READ, INPUT);      // READ
+  pinMode(CLOCK, OUTPUT);    // CLOCK
+  pinMode(RESET, OUTPUT);    // RESET
+  pinMode(LOAD, OUTPUT);     // LOAD
+  pinMode(SIN, OUTPUT);      // SIN
+  pinMode(START, OUTPUT);    // START
+  pinMode(LED, OUTPUT);      // LED
+  pinMode(RED, OUTPUT);      // LED
   camInit();
   Serial.println("Version for Arduino with Analog Read Fast");
   Serial.println("Ready for transmission");
@@ -238,8 +235,8 @@ void camSetReg(unsigned char regaddr, unsigned char regval)  // Sets one of the 
     }
     digitalWrite(CLOCK, HIGH);
     digitalWrite(SIN, LOW);
-    digitalWrite(CLOCK, LOW); //register is valid on falling fronts
-    digitalWrite(LOAD, LOW);  // come back to normal state
+    digitalWrite(CLOCK, LOW);  //register is valid on falling fronts
+    digitalWrite(LOAD, LOW);   // come back to normal state
   }
   Serial.println(" ");
 }
@@ -278,9 +275,9 @@ void camSetRegTADD(unsigned char regaddr, unsigned char regval)  // Sets one of 
     }
     digitalWrite(CLOCK, HIGH);
     digitalWrite(SIN, LOW);
-    digitalWrite(CLOCK, LOW); //register is valid on falling fronts
-    digitalWrite(LOAD, LOW);  // come back to normal state
-    digitalWrite(TADD, HIGH);   // come back to normal state
+    digitalWrite(CLOCK, LOW);  //register is valid on falling fronts
+    digitalWrite(LOAD, LOW);   // come back to normal state
+    digitalWrite(TADD, HIGH);  // come back to normal state
   }
   Serial.println(" ");
 }
