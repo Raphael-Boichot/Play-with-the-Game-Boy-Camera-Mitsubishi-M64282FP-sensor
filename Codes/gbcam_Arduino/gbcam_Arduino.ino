@@ -21,7 +21,7 @@ int SIN = 12;    //parameter input, pulled down internally
 int START = 13;  //Image sensing start, pulled down internally, has to be high before rising CLOCK
 
 unsigned char v_min = 50;   //minimal voltage returned by the sensor in 8 bits DEC
-unsigned char v_max = 180;  //maximal voltage returned by the sensor in 8 bits DEC
+unsigned char v_max = 150;  //maximal voltage returned by the sensor in 8 bits DEC
 unsigned char reg;
 unsigned long int accumulator, counter, current_exposure, new_exposure;
 unsigned char startX = 0;     //for M64283FP only
@@ -77,9 +77,9 @@ void setup() {
   camReg[7] = camReg[7] & 0b00001111;  //all E registers must be LOW for random access mode
   //enter here the paremeters to allow random access to the sensor, see documentation
   startX = 0;
-  startY = 0;
+  startY = 8;
   endX = 16;
-  endY = 16;
+  endY = 12;
   x_tiles = endX - startX;  //tiles centered by default in random access mode for 83FP, must be even
   y_tiles = endY - startY;  //tiles centered by default in random access mode for 83FP, must be even
   START_reg = (startY << 4) | (startX & 0b00001111);

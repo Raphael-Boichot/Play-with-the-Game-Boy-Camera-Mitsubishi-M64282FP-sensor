@@ -15,6 +15,7 @@ flag=0;
 image_counter=0;
 x_tiles=0;
 y_tiles=0;
+title_reg='Empty';
 mkdir ./image
 while flag==0 %infinite loop
     data = readline(arduinoObj);
@@ -28,6 +29,10 @@ while flag==0 %infinite loop
     if not(isempty(strfind(data,'y_tiles')));
         str=char(data);
         y_tiles=str2double(str(10:11));
+    end
+    if not(isempty(strfind(data,'Exposure')));
+        str=char(data);
+        title_reg=(str(end-4:end));
     end
     if strlength(data)>64 %This is an image coming
         data=(char(data));
@@ -57,6 +62,7 @@ while flag==0 %infinite loop
         imwrite(image_display,['./image/output_',num2str(image_counter),'.gif'],'gif');
         subplot(1,2,2);
         imshow(image_display)
+        title(title_reg)
         drawnow
     end
 end
