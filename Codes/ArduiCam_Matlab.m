@@ -52,17 +52,12 @@ while flag==0 %infinite loop
         raw=im; %We keep the raw data just in case
         maximum=max(max(raw));
         minimum=min(min(raw));
-        figure(1)
-        subplot(1,2,1);
-        histogram(raw,100)
-        %end
         image_display=uint8(raw-minimum)*(255/(maximum-minimum));
         image_counter=image_counter+1;
         image_display=imresize(image_display,4,"nearest");
         imwrite(image_display,['./image/output_',num2str(image_counter),'.gif'],'gif');
-        subplot(1,2,2);
         imshow(image_display)
-        title(title_reg)
+        title(['Exp. register:', title_reg])
         drawnow
     end
 end
