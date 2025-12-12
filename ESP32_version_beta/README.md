@@ -6,4 +6,4 @@ Final word from Espressif: can it be even more confusing ?
 
 ![](/ESP32_version_beta/ESP32_specifications.png)
 
-And no, the remaining 160 kB CANNOT be allocated at "runtime" (whatever this means) !
+And no, the remaining 160 kB CANNOT be allocated by any possible way.
