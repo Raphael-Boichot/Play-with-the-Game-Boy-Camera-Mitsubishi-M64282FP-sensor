@@ -5,3 +5,5 @@ It is probably possible to rewrite everything but even well written the code wil
 Final word from Espressif: can it be even more confusing ?
 
 ![](/ESP32_version_beta/ESP32_specifications.png)
+
+And no, the remaining 160 kB is NOT addressable !
